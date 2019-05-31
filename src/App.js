@@ -1,26 +1,33 @@
-import React from 'react';
+import React, { Component } from 'react';
+import Header from './components/HeaderComponent';
+import Footer from './components/FooterComponent';
+import Main from './components/MainComponent';
+import NotFound from './components/NotFoundComponent';
+import { Switch, Route, Redirect} from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+    };
+  }
+
+  render(){
+    return (
+      <div className="App">
+        <Header />
+        <Switch>
+              <Route exact path='/' component={Main} />
+              <Route exact path='/projects' render={() => <Main />} />
+              <Route exact path='/dev' render={() => <Main />}  />
+              <Route exact path='/software' render={() => <Main />} />
+              <Redirect to="/404" component={NotFound} />
+          </Switch>
+        <Footer />
+      </div>
+    );
+  }
 }
 
-export default App;
