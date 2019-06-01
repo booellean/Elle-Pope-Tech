@@ -45,9 +45,8 @@ export default class App extends Component {
         <Header />
         <Switch>
               <Route exact path='/' component={Main} />
-              <Route exact path='/projects' render={() => <Main data={this.state.github}/>} />
-              <Route exact path='/dev' render={() => <Main data={this.state.github}/>}  />
-              <Route exact path='/software' render={() => <Main data={this.state.github}/>} />
+              <Route exact path='/repos' render={() => <Main data={this.state.github}/>} title='Repositories'/>
+              <Route exact path='/open-source' render={() => <Main data={this.state.github}/>} title='Open Source'  />
               <Redirect to="/404" component={NotFound} />
           </Switch>
         <Footer />

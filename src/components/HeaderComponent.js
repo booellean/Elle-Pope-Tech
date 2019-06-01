@@ -20,10 +20,10 @@ export default class Header extends Component {
                 <NavLink className="nav-link" to='/'><span className="fa fa-info fa-lg"></span> Home</NavLink>
               </li>
               <li>
-                <NavLink className="nav-link" to='/projects'><span className="fa fa-info fa-lg"></span> Projects</NavLink>
+                <NavLink className="nav-link" to='/repos'><span className="fa fa-info fa-lg"></span> Repos</NavLink>
               </li>
               <li>
-                <NavLink className="nav-link" to='/projects'><span className="fa fa-info fa-lg"></span> Languages</NavLink>
+                <NavLink className="nav-link" to='/open-source'><span className="fa fa-info fa-lg"></span> Open Source</NavLink>
               </li>
             </ul>
           </nav>

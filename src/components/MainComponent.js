@@ -8,11 +8,11 @@ class Main extends Component {
 
   render(){
 
-    const listItems = this.props.data.map(  item => {
-        return(
-          <li>{item.language}</li>
-        );
-      });
+    // const listItems = this.props.data.map(  item => {
+    //     return(
+    //       <li>{item.language}</li>
+    //     );
+    //   });
 
     return(
       <>
@@ -20,7 +20,7 @@ class Main extends Component {
         <header id="page-header">
           <h2>This is the {this.props.title} Page</h2>
           <ul>
-            {listItems}
+            {/* {listItems} */}
           </ul>
         </header>
           <Page />
