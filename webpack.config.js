@@ -1,10 +1,11 @@
-const path = require('path');
+const path = require("path");
+const outputDirectory = "dist";
 
 module.exports = {
-  entry: './src/index.js',
+  entry: ['babel-polyfill', './src/index.js'],
   output: {
-    path: path.resolve('public'),
-    filename: 'bundle.js'
+    path: path.join(__dirname, outputDirectory),
+    filename: "bundle.js"
   },
   module: {
     rules: [
@@ -12,9 +13,20 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
+          loader: "babel-loader"
         }
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
       }
     ]
+  },
+  devServer: {
+    port: 3000,
+    open: true,
+    proxy: {
+      "./": "http://localhost:8080"
+    }
   }
 };
