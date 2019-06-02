@@ -11,7 +11,32 @@ export default class App extends Component {
   constructor(props){
     super(props);
     this.state = {
+      github: null
     };
+  }
+
+  componentDidMount(){
+    this.getData();
+  }
+
+  getData() {
+    return(
+      fetch('https://api.github.com/users/booellean/repos', {
+        method: 'GET',
+        mode: 'cors'
+      })
+      .then( (res) =>{ return res.json(); })
+      .then( (data) =>{ return data.filter( item => item.fork === true ); })
+      .then( (data) =>{
+        this.setState({
+          github: JSON.stringify(data)
+        });
+        console.log('loaded');
+      })
+      .catch( (error) =>{
+        return `${error}: Github Repos cannot be fetched at this time!`
+      })
+    );
   }
 
   render(){
@@ -20,9 +45,9 @@ export default class App extends Component {
         <Header />
         <Switch>
               <Route exact path='/' component={Main} />
-              <Route exact path='/projects' render={() => <Main />} />
-              <Route exact path='/dev' render={() => <Main />}  />
-              <Route exact path='/software' render={() => <Main />} />
+              <Route exact path='/projects' render={() => <Main data={this.state.github}/>} />
+              <Route exact path='/dev' render={() => <Main data={this.state.github}/>}  />
+              <Route exact path='/software' render={() => <Main data={this.state.github}/>} />
               <Redirect to="/404" component={NotFound} />
           </Switch>
         <Footer />

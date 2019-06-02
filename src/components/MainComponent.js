@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
 import Page from './PageComponent';
 
-export default class Main extends Component {
+class Main extends Component {
   constructor(props){
     super(props);
-    this.state = {
-    };
   }
 
   render(){
+
+    const listItems = this.props.data.map(  item => {
+        return(
+          <li>{item.language}</li>
+        );
+      });
+
     return(
       <>
         <main id="main">
         <header id="page-header">
           <h2>This is the {this.props.title} Page</h2>
           <ul>
-            <li>There will be options here</li>
+            {listItems}
           </ul>
         </header>
           <Page />
@@ -24,3 +29,5 @@ export default class Main extends Component {
     );
   }
 }
+
+export default Main;
