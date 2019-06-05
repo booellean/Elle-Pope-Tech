@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import './App.css';
 import Header from './components/HeaderComponent';
 import Footer from './components/FooterComponent';
 import Main from './components/MainComponent';
 import NotFound from './components/NotFoundComponent';
 import { Switch, Route, Redirect} from 'react-router-dom';
 import logo from './logo.svg';
-import './App.css';
 
 export default class App extends Component {
   constructor(props){

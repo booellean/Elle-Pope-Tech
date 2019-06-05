@@ -6,7 +6,7 @@ import config from './config';
 const server = express();
 server.use(bodyParser.json());
 
-server.use(express.static('public'));
+server.use(express.static('./../public'));
 server.set('view engine', 'ejs');
 
 server.get('/', (req, res) => {
@@ -68,5 +68,3 @@ server.get('/stats', (req, res) => {
 server.listen(config.port, config.host, () => {
   console.info('Express listening on port', config.port);
 });
-
-console.log(req_URL);
