@@ -21,20 +21,20 @@ const allJs = [
   },
   {
     name : 'reactJs',
-    src : './src/React/*.js',
-    dest : './dist/React/'
+    src : './src/client/*.js',
+    dest : './dist/client/'
   },
   {
     name : 'reactCompJs',
-    src : './src/React/components/*.js',
-    dest : './dist/React/components/'
+    src : './src/client/components/*.js',
+    dest : './dist/client/components/'
   }
 ];
 const allCss = [
   {
     name : 'reactCss',
-    src : './src/React/*.css',
-    dest : './dist/React/'
+    src : './src/client/*.css',
+    dest : './dist/client/'
   }
 ];
 const allTransfers = [
@@ -50,8 +50,8 @@ const allTransfers = [
   },
   {
     name : 'reactTransfer',
-    src : './src/React/*.{ico, json, png, jpg, svg}',
-    dest : './dist/React/'
+    src : './src/client/*.{ico, json, png, jpg, svg}',
+    dest : './dist/client/'
   }
 ];
 
