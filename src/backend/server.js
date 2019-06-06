@@ -4,12 +4,13 @@ import render from './render';
 import config from './config';
 
 const server = express();
+const router = express.Router();
 server.use(bodyParser.json());
 
 server.use(express.static('./../public'));
 server.set('view engine', 'ejs');
 
-server.get('/', (req, res) => {
+router.get('/', (req, res) => {
   render(req.params.reqId)
     .then(({ initialMarkup, initialData }) => {
       res.render('index', {
@@ -23,7 +24,7 @@ server.get('/', (req, res) => {
     });
 });
 
-server.get('/open-source/:orgId', (req, res) => {
+router.get('/open-source/:orgId', (req, res) => {
   render(req.params.reqId)
     .then(({ initialMarkup, initialData }) => {
       res.render('index', {
@@ -37,7 +38,7 @@ server.get('/open-source/:orgId', (req, res) => {
     });
 });
 
-server.get('/repos/:repoId', (req, res) => {
+router.get('/repos/:repoId', (req, res) => {
   render(req.params.reqId)
     .then(({ initialMarkup, initialData }) => {
       res.render('index', {
@@ -51,7 +52,7 @@ server.get('/repos/:repoId', (req, res) => {
     });
 });
 
-server.get('/stats', (req, res) => {
+router.get('/stats', (req, res) => {
   render(req.params.reqId)
     .then(({ initialMarkup, initialData }) => {
       res.render('index', {
