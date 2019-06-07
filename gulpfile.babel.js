@@ -16,18 +16,23 @@ const gutil = require('gulp-util');
 const allJs = [
   {
     name : 'backendJs',
-    src : './src/backend/*.js',
-    dest : './dist/backend/'
+    src : './src/server/*.js',
+    dest : './dist/server/'
   },
   {
-    name : 'reactJs',
+    name : 'reactClientJs',
     src : './src/client/*.js',
     dest : './dist/client/'
   },
   {
+    name : 'reactSharedJs',
+    src : './src/shared/*.js',
+    dest : './dist/shared/'
+  },
+  {
     name : 'reactCompJs',
-    src : './src/client/components/*.js',
-    dest : './dist/client/components/'
+    src : './src/shared/components/*.js',
+    dest : './dist/shared/components/'
   }
 ];
 const allCss = [
@@ -35,6 +40,11 @@ const allCss = [
     name : 'reactCss',
     src : './src/client/*.css',
     dest : './dist/client/'
+  },
+  {
+    name : 'reactSharedCss',
+    src : './src/shared/*.css',
+    dest : './dist/shared/'
   }
 ];
 const allTransfers = [

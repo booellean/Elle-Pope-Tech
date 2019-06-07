@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import fetch from 'node-fetch';
 
-import App from '../client/App';
+import App from '../shared/App';
 // import { BrowserRouter } from 'react-router-dom';
 
 import config from './config';

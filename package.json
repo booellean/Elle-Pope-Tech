@@ -22,7 +22,7 @@
     "react-scripts": "3.0.1"
   },
   "scripts": {
-    "start": "nodemon dist/backend/server.js",
+    "start": "nodemon dist/server/server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
