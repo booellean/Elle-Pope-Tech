@@ -9,7 +9,7 @@ import config from './config';
 
 const req_URL = `https://api.github.com/user/repos?access_token=${config.OAUTH}&per_page=${config.perPage}`;
 
-const render = (reqId) =>
+const apiRender = (reqId) =>
   fetch(req_URL, {
 
   })
@@ -19,10 +19,10 @@ const render = (reqId) =>
   .then( res =>{
     return {
       initialMarkup: ReactDOMServer.renderToString(
-        <App github={res} />
+        <BrowserRouter><App github={res} /></BrowserRouter>
       ),
       res
     };
   });
 
-export default render;
+export default apiRender;

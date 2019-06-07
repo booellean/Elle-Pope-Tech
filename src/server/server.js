@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import render from './render';
+import apiRender from './render';
 import config from './config';
 
 const server = express();
@@ -11,7 +11,7 @@ server.use(express.static('./../public'));
 server.set('view engine', 'ejs');
 
 router.get('/', (req, res) => {
-  render(req.params.reqId)
+  apiRender(req.params.reqId)
     .then(({ initialMarkup, initialData }) => {
       res.render('index', {
         initialMarkup,
@@ -25,7 +25,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/open-source/:orgId', (req, res) => {
-  render(req.params.reqId)
+  apiRender(req.params.reqId)
     .then(({ initialMarkup, initialData }) => {
       res.render('index', {
         initialMarkup,
@@ -39,7 +39,7 @@ router.get('/open-source/:orgId', (req, res) => {
 });
 
 router.get('/repos/:repoId', (req, res) => {
-  render(req.params.reqId)
+  apiRender(req.params.reqId)
     .then(({ initialMarkup, initialData }) => {
       res.render('index', {
         initialMarkup,
@@ -53,7 +53,7 @@ router.get('/repos/:repoId', (req, res) => {
 });
 
 router.get('/stats', (req, res) => {
-  render(req.params.reqId)
+  apiRender(req.params.reqId)
     .then(({ initialMarkup, initialData }) => {
       res.render('index', {
         initialMarkup,
