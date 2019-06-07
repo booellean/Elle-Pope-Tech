@@ -126,7 +126,7 @@ allJs.forEach( (option) =>{
     return gulp.src(option.src)
 //    .pipe(traceur())
     .pipe(babel())
-    .pipe(uglify())
+    // .pipe(uglify())
     .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
     .pipe(gulp.dest(option.dest))
   });
