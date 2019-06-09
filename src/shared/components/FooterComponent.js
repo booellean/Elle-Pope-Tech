@@ -9,7 +9,7 @@ export default class Footer extends Component {
 
   render(){
     return(
-      <>
+      <React.Fragment>
         <footer id="footer">
           <small>copyright information here</small>
           <nav id="social-links">
@@ -29,7 +29,7 @@ export default class Footer extends Component {
             </ul>
           </nav>
         </footer>
-      </>
+      </React.Fragment>
     );
   }
 }

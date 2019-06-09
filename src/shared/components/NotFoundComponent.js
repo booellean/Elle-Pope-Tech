@@ -10,9 +10,9 @@ export default class NotFound extends Component {
 
   render(){
     return(
-      <>
+      <React.Fragment>
         <p>404 Not Found!</p>
-      </>
+      </React.Fragment>
     );
   }
 }

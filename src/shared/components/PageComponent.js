@@ -9,9 +9,9 @@ export default class Page extends Component {
 
   render(){
     return(
-      <>
+      <React.Fragment>
         <p>rendered content will go here</p>
-      </>
+      </React.Fragment>
     );
   }
 }

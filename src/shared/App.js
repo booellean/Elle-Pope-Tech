@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import './App.css';
 import Header from './components/HeaderComponent';
 import Footer from './components/FooterComponent';
@@ -28,4 +27,5 @@ export default class App extends Component {
     );
   }
 }
+
 

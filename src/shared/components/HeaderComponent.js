@@ -11,7 +11,7 @@ export default class Header extends Component {
 
   render(){
     return(
-      <>
+      <React.Fragment>
         <header id="header">
           <h1>This is the Header for Elle Tech</h1>
           <nav>
@@ -28,7 +28,7 @@ export default class Header extends Component {
             </ul>
           </nav>
         </header>
-      </>
+      </React.Fragment>
     );
   }
 }

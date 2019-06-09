@@ -1,71 +1,28 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import apiRender from './render';
-import config from './config';
+import express from "express";
+import React from "react";
+import { renderToString } from "react-dom/server";
+import { StaticRouter } from 'react-router';
+import App from "../shared/App";
 
-const server = express();
-const router = express.Router();
-server.use(bodyParser.json());
+const app = express();
 
-server.use(express.static('./../public'));
-server.set('view engine', 'ejs');
+app.use(express.static("public"));
 
-router.get('/', (req, res) => {
-  apiRender(req.params.reqId)
-    .then(({ initialMarkup, initialData }) => {
-      res.render('index', {
-        initialMarkup,
-        initialData
-      });
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(404).send('Bad Request');
-    });
+app.get('/', (req, res) => {
+  res.send(`
+      <!DOCTYPE html>
+      <head>
+        <title>Universal Reacl</title>
+        <link rel="stylesheet" href="/css/main.css">
+        <script src="/bundle.js" defer></script>
+      </head>
+      <body>
+        <div id="root">${renderToString(<StaticRouter location={req.url}><App /></StaticRouter>)}</div>
+      </body>
+    </html>
+  `);
 });
 
-router.get('/open-source/:orgId', (req, res) => {
-  apiRender(req.params.reqId)
-    .then(({ initialMarkup, initialData }) => {
-      res.render('index', {
-        initialMarkup,
-        initialData
-      });
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(404).send('Bad Request');
-    });
-});
-
-router.get('/repos/:repoId', (req, res) => {
-  apiRender(req.params.reqId)
-    .then(({ initialMarkup, initialData }) => {
-      res.render('index', {
-        initialMarkup,
-        initialData
-      });
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(404).send('Bad Request');
-    });
-});
-
-router.get('/stats', (req, res) => {
-  apiRender(req.params.reqId)
-    .then(({ initialMarkup, initialData }) => {
-      res.render('index', {
-        initialMarkup,
-        initialData
-      });
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(404).send('Bad Request');
-    });
-});
-
-server.listen(config.port, config.host, () => {
-  console.info('Express listening on port', config.port);
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Server is listening");
 });
