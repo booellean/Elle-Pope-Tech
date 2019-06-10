@@ -8,7 +8,7 @@ import config from './config';
 
 const req_URL = `https://api.github.com/user/repos?access_token=${config.OAUTH}&per_page=${config.perPage}`;
 
-const apiRender = (req) =>
+const preRender = (req) =>
   fetch(req_URL, {
 
   })
@@ -26,4 +26,4 @@ const apiRender = (req) =>
     res.status(404).send('Bad Request');
   });;
 
-export default apiRender;
+export default preRender;
