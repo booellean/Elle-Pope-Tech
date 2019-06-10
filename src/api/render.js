@@ -10,16 +10,23 @@ const req_URL = `https://api.github.com/user/repos?access_token=${config.OAUTH}&
 
 const preRender = (req) =>
   fetch(req_URL, {
-
+    method: 'GET',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
-  .then(res => {
+  .then( res => {
     return res.json();
   })
   .then( res =>{
-    return {
-      initialMarkup: renderToString(<StaticRouter location={req.url}><App github={res}/></StaticRouter>),
-      res
+    let markup = {
+      initialMarkup: renderToString(<StaticRouter location={req.url}><App github={JSON.stringify(res)}/></StaticRouter>),
+      initialData: res
     };
+    console.log(markup.initialMarkup);
+    return markup
+
   })
   .catch(error => {
     console.error(error);

@@ -22,6 +22,9 @@ export default class App extends Component {
               <Route path='/open-source' render={() => <Main data={this.props.github} title='Open Source'  />}/>
               <Redirect to='/404' component={NotFound} />
           </Switch>
+          <div>
+            {this.props.github};
+          </div>
         <Footer />
       </div>
     );

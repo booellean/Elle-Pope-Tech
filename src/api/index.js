@@ -66,4 +66,4 @@ router.get('/programmer', (req, res) => {
   res.send('ProgrammerInfo');
 });
 
-export default apiRouter;
+export default router;

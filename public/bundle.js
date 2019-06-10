@@ -27557,10 +27557,22 @@ var App = function (_Component) {
             __self: this
           })
         ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          'div',
+          {
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 25
+            },
+            __self: this
+          },
+          this.props.github,
+          ';'
+        ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__components_FooterComponent__["a" /* default */], {
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 25
+            lineNumber: 28
           },
           __self: this
         })

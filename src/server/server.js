@@ -1,12 +1,16 @@
 import express from 'express';
 import preRender from '../api/render';
 import config from '../api/config';
+import apiRouter from '../api/index';
 
 const app = express();
 
+app.use('../api', apiRouter);
+app.use(express.static('public'));
+
 app.get('*', (req, res) => {
   preRender(req)
-  .then( ({ initialMarkup, initialData}) =>{
+  .then( ( data ) =>{
     res.send(`
       <!DOCTYPE html>
       <head>
@@ -15,9 +19,9 @@ app.get('*', (req, res) => {
         <script src='/bundle.js' defer></script>
       </head>
       <body>
-        <div id='root'>${initialMarkup}</div>
+        <div id='root'>${data.initialMarkup}</div>
         <script type="text/javascript">
-          window.initialData = ${initialData};
+          window.initialData = ${JSON.stringify(data.initialData)};
         </script>
       </body>
     </html>
@@ -28,9 +32,6 @@ app.get('*', (req, res) => {
     res.status(404).send('Bad Request');
   });
 });
-
-app.use('../api', apiRouter);
-app.use(express.static('public'));
 
 app.listen(config.port, config.host, () => {
   console.log(`Server is listening on ${config.host}:${config.port}`);
