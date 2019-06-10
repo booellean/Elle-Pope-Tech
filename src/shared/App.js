@@ -14,13 +14,13 @@ export default class App extends Component {
 
   render(){
     return (
-      <div className="App">
+      <div className='App'>
         <Header />
         <Switch>
-              <Route exact path='/' component={Main} />
-              <Route exact path='/repos' render={() => <Main data={this.props.github}  title='Repositories' />}/>
-              <Route exact path='/open-source' render={() => <Main data={this.props.github} title='Open Source'  />}/>
-              <Redirect to="/404" component={NotFound} />
+              <Route exact path='/' render={() => <Main data={this.props.github}  title='Repositories' />} />
+              <Route path='/repos' render={() => <Main data={this.props.github}  title='Repositories' />}/>
+              <Route path='/open-source' render={() => <Main data={this.props.github} title='Open Source'  />}/>
+              <Redirect to='/404' component={NotFound} />
           </Switch>
         <Footer />
       </div>

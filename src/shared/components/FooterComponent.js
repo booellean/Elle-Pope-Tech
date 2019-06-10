@@ -10,21 +10,21 @@ export default class Footer extends Component {
   render(){
     return(
       <React.Fragment>
-        <footer id="footer">
+        <footer id='footer'>
           <small>copyright information here</small>
-          <nav id="social-links">
+          <nav id='social-links'>
             <ul>
               <li>
-                <a className="social-link" href='#github'> Github</a>
+                <a className='social-link' href='#github'> Github</a>
               </li>
               <li>
-                <a className="social-link" href='#twitter'> LinkedIn</a>
+                <a className='social-link' href='#twitter'> LinkedIn</a>
               </li>
               <li>
-                <a className="social-link" href='#twitter'> Twitter</a>
+                <a className='social-link' href='#twitter'> Twitter</a>
               </li>
               <li>
-                <a className="social-link" href='#twitter'> Itch.io</a>
+                <a className='social-link' href='#twitter'> Itch.io</a>
               </li>
             </ul>
           </nav>

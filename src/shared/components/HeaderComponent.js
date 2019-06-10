@@ -12,18 +12,18 @@ export default class Header extends Component {
   render(){
     return(
       <React.Fragment>
-        <header id="header">
+        <header id='header'>
           <h1>This is the Header for Elle Tech</h1>
           <nav>
             <ul>
               <li>
-                <NavLink className="nav-link" to='/'><span className="fa fa-info fa-lg"></span> Home</NavLink>
+                <NavLink className='nav-link' to='/'><span className='fa fa-info fa-lg'></span> Home</NavLink>
               </li>
               <li>
-                <NavLink className="nav-link" to='/repos'><span className="fa fa-info fa-lg"></span> Repos</NavLink>
+                <NavLink className='nav-link' to='/repos'><span className='fa fa-info fa-lg'></span> Repos</NavLink>
               </li>
               <li>
-                <NavLink className="nav-link" to='/open-source'><span className="fa fa-info fa-lg"></span> Open Source</NavLink>
+                <NavLink className='nav-link' to='/open-source'><span className='fa fa-info fa-lg'></span> Open Source</NavLink>
               </li>
             </ul>
           </nav>

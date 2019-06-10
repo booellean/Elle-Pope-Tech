@@ -16,8 +16,8 @@ class Main extends Component {
 
     return(
       <React.Fragment>
-        <main id="main">
-        <header id="page-header">
+        <main id='main'>
+        <header id='page-header'>
           <h2>This is the {this.props.title} Page</h2>
           <ul>
             {/* {listItems} */}
