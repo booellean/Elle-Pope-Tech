@@ -12,19 +12,20 @@ export default class App extends Component {
     super(props);
   }
 
+  componentDidMount(){
+    console.log();
+  }
+
   render(){
     return (
       <div className='App'>
         <Header />
         <Switch>
               <Route exact path='/' render={() => <Main data={this.props.github}  title='Repositories' />} />
-              <Route path='/repos' render={() => <Main data={this.props.github}  title='Repositories' />}/>
-              <Route path='/open-source' render={() => <Main data={this.props.github} title='Open Source'  />}/>
+              <Route path='/repos' render={() => <Main data={JSON.stringify(JSON.parse(this.props.github).filter(  item => item.owner.login === 'booellean'))}  title='Repositories' />}/>
+              <Route path='/open-source' render={() => <Main data={JSON.stringify(JSON.parse(this.props.github).filter( item => item.owner.login !== 'booellean'))} title='Open Source'  />}/>
               <Redirect to='/404' component={NotFound} />
           </Switch>
-          <div>
-            {this.props.github};
-          </div>
         <Footer />
       </div>
     );

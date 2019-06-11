@@ -27483,6 +27483,11 @@ var App = function (_Component) {
   }
 
   _createClass(App, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      console.log();
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
@@ -27491,14 +27496,14 @@ var App = function (_Component) {
         'div',
         { className: 'App', __source: {
             fileName: _jsxFileName,
-            lineNumber: 17
+            lineNumber: 21
           },
           __self: this
         },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__components_HeaderComponent__["a" /* default */], {
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 18
+            lineNumber: 22
           },
           __self: this
         }),
@@ -27507,72 +27512,64 @@ var App = function (_Component) {
           {
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 19
+              lineNumber: 23
             },
             __self: this
           },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6_react_router_dom__["d" /* Route */], { exact: true, path: '/', render: function render() {
               return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__components_MainComponent__["a" /* default */], { data: _this2.props.github, title: 'Repositories', __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 20
+                  lineNumber: 24
                 },
                 __self: _this2
               });
             }, __source: {
               fileName: _jsxFileName,
-              lineNumber: 20
+              lineNumber: 24
             },
             __self: this
           }),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6_react_router_dom__["d" /* Route */], { path: '/repos', render: function render() {
-              return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__components_MainComponent__["a" /* default */], { data: _this2.props.github, title: 'Repositories', __source: {
+              return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__components_MainComponent__["a" /* default */], { data: JSON.stringify(JSON.parse(_this2.props.github).filter(function (item) {
+                  return item.owner.login === 'booellean';
+                })), title: 'Repositories', __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 21
+                  lineNumber: 25
                 },
                 __self: _this2
               });
             }, __source: {
               fileName: _jsxFileName,
-              lineNumber: 21
+              lineNumber: 25
             },
             __self: this
           }),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6_react_router_dom__["d" /* Route */], { path: '/open-source', render: function render() {
-              return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__components_MainComponent__["a" /* default */], { data: _this2.props.github, title: 'Open Source', __source: {
+              return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__components_MainComponent__["a" /* default */], { data: JSON.stringify(JSON.parse(_this2.props.github).filter(function (item) {
+                  return item.owner.login !== 'booellean';
+                })), title: 'Open Source', __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 22
+                  lineNumber: 26
                 },
                 __self: _this2
               });
             }, __source: {
               fileName: _jsxFileName,
-              lineNumber: 22
+              lineNumber: 26
             },
             __self: this
           }),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6_react_router_dom__["c" /* Redirect */], { to: '/404', component: __WEBPACK_IMPORTED_MODULE_5__components_NotFoundComponent__["a" /* default */], __source: {
               fileName: _jsxFileName,
-              lineNumber: 23
+              lineNumber: 27
             },
             __self: this
           })
         ),
-        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-          'div',
-          {
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 25
-            },
-            __self: this
-          },
-          this.props.github,
-          ';'
-        ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__components_FooterComponent__["a" /* default */], {
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 28
+            lineNumber: 29
           },
           __self: this
         })
@@ -29787,12 +29784,21 @@ var Main = function (_Component) {
   _createClass(Main, [{
     key: 'render',
     value: function render() {
+      var _this2 = this;
 
-      // const listItems = this.props.data.map(  item => {
-      //     return(
-      //       <li>{item.language}</li>
-      //     );
-      //   });
+      var listItems = JSON.parse(this.props.data).map(function (item) {
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          'li',
+          {
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 13
+            },
+            __self: _this2
+          },
+          item.language
+        );
+      });
 
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
@@ -29832,13 +29838,17 @@ var Main = function (_Component) {
               this.props.title,
               ' Page'
             ),
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('ul', {
-              __source: {
-                fileName: _jsxFileName,
-                lineNumber: 22
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'ul',
+              {
+                __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 22
+                },
+                __self: this
               },
-              __self: this
-            })
+              listItems
+            )
           ),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__PageComponent__["a" /* default */], {
             __source: {
