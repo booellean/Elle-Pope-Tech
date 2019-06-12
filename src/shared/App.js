@@ -17,13 +17,17 @@ export default class App extends Component {
   }
 
   render(){
+    let data;
+    if(this.props.github){
+      data = JSON.parse(this.props.github);
+    }
     return (
       <div className='App'>
         <Header />
         <Switch>
-              <Route exact path='/' render={() => <Main data={this.props.github}  title='Repositories' />} />
-              <Route path='/repos' render={() => <Main data={JSON.stringify(JSON.parse(this.props.github).filter(  item => item.owner.login === 'booellean'))}  title='Repositories' />}/>
-              <Route path='/open-source' render={() => <Main data={JSON.stringify(JSON.parse(this.props.github).filter( item => item.owner.login !== 'booellean'))} title='Open Source'  />}/>
+              <Route exact path='/' render={() => <Main data={...data}  title='About' />} />
+              <Route path='/repos' render={() => <Main data={...(data.filter(  item => item.owner.login === 'booellean'))}  title='Repositories' />}/>
+              <Route path='/open-source' render={() => <Main data={...(data.filter( item => item.owner.login !== 'booellean'))} title='Open Source'  />}/>
               <Redirect to='/404' component={NotFound} />
           </Switch>
         <Footer />
