@@ -25,9 +25,9 @@ export default class App extends Component {
       <div className='App'>
         <Header />
         <Switch>
-              <Route exact path='/' render={() => <Main data={...data}  title='About' />} />
-              <Route path='/repos' render={() => <Main data={...(data.filter(  item => item.owner.login === 'booellean'))}  title='Repositories' />}/>
-              <Route path='/open-source' render={() => <Main data={...(data.filter( item => item.owner.login !== 'booellean'))} title='Open Source'  />}/>
+              <Route exact path='/' render={() => <Main data={data}  title='About' />} />
+              <Route path='/repos' render={() => <Main data={(data.filter(  item => item.owner.login === 'booellean'))}  title='Repositories' />}/>
+              <Route path='/open-source' render={() => <Main data={(data.filter( item => item.owner.login !== 'booellean'))} title='Open Source'  />}/>
               <Redirect to='/404' component={NotFound} />
           </Switch>
         <Footer />

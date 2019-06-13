@@ -9,7 +9,8 @@ app.use('../api', apiRouter);
 app.use(express.static('public'));
 
 app.get('*', (req, res) => {
-  preRender(req)
+  // preRender.renderUserRepos(req)
+  preRender.fetchContribRepos(req)
   .then( ( data ) =>{
     res.send(`
       <!DOCTYPE html>

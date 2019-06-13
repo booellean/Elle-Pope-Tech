@@ -4,13 +4,15 @@ import Page from './PageComponent';
 class Main extends Component {
   constructor(props){
     super(props);
+    console.log(this.props.data);
   }
 
   render(){
 
-    const listItems = JSON.parse(this.props.data).map(  item => {
+    const listItems = this.props.data.map(  item => {
         return(
-          <li>{item.language}</li>
+          // <li>{item.owner.login}</li>
+          <li>{JSON.stringify(item)}</li>
         );
       });
 
