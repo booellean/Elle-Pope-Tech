@@ -6,9 +6,8 @@ import { StaticRouter } from 'react-router';
 import App from '../shared/App';
 import config from './config';
 
-const req_URL = `https://api.github.com/user/repos?per_page=${config.perPage}`;
 const repo_URL = `https://api.github.com/users/${config.user}/repos?per_page=${config.perPage}`;
-const user_URL = `https://api.github.com/users/${config.user}/repos?per_page=${config.perPage}`;
+const user_URL = `https://api.github.com/users/${config.user}`;
 const contrib_URL = `https://www.github.com/${config.user}?per_page=${config.perPage}`;
 
 const preRender = {
@@ -30,7 +29,6 @@ const preRender = {
           initialMarkup: renderToString(<StaticRouter location={req.url}><App github={JSON.stringify(res)}/></StaticRouter>),
           initialData: res
         };
-        console.log(markup.initialMarkup);
         return markup
 
       })
@@ -55,11 +53,13 @@ const preRender = {
         return res.json();
       })
       .then( res =>{
+        return [res];
+      })
+      .then( res =>{
         let markup = {
           initialMarkup: renderToString(<StaticRouter location={req.url}><App github={JSON.stringify(res)}/></StaticRouter>),
           initialData: res
         };
-        console.log(markup.initialMarkup);
         return markup
 
       })
@@ -101,16 +101,32 @@ const preRender = {
           return item.substring(startPos, endPos)
         })
       })
-      .then( res => {
-        console.log(res)
-        return JSON.parse(JSON.stringify(res));
+      .then( res =>{
+        return Promise.all( res.map ( item =>{
+          return(
+            fetch(`https://api.github.com/orgs/${item}`, {
+              method: 'GET',
+              mode: 'cors',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${config.OAUTH}`
+              }
+            })
+            .then( res =>{
+              return res.json();
+            })
+            .catch( error =>{
+              console.error( error );
+              return {error: 'Organizations not Found!'}
+            })
+          );
+        }))
       })
       .then( res =>{
         let markup = {
           initialMarkup: renderToString(<StaticRouter location={req.url}><App github={JSON.stringify(res)}/></StaticRouter>),
           initialData: res
         };
-        console.log(markup.initialMarkup);
         return markup
 
       })
