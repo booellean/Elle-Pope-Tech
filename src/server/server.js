@@ -8,8 +8,33 @@ const app = express();
 app.use('../api', apiRouter);
 app.use(express.static('public'));
 
-app.get('*', (req, res) => {
-  preRender.renderUserStats(req)
+app.get(['/', '/repos', '/open-source'], (req, res) => {
+  preRender.renderUserRepos(req)
+  .then( ( data ) =>{
+    res.send(`
+      <!DOCTYPE html>
+      <head>
+        <title>Elle Pope Tech</title>
+        <link rel='stylesheet' href='/css/main.css'>
+        <script src='/bundle.js' defer></script>
+      </head>
+      <body>
+        <div id='root'>${data.initialMarkup}</div>
+        <script type="text/javascript">
+          window.initialData = ${JSON.stringify(data.initialData)};
+        </script>
+      </body>
+    </html>
+    `);
+  })
+  .catch(error => {
+    console.error(error);
+    res.status(404).send('Bad Request');
+  });
+});
+
+app.get(['/repos/:itemId', '/open-source/:itemId'], (req, res) => {
+  preRender.renderOrgInfo(req.params.itemId)
   .then( ( data ) =>{
     res.send(`
       <!DOCTYPE html>

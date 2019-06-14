@@ -12,10 +12,6 @@ export default class App extends Component {
     super(props);
   }
 
-  componentDidMount(){
-    console.log();
-  }
-
   render(){
     let data;
     if(this.props.github){
@@ -26,8 +22,8 @@ export default class App extends Component {
         <Header />
         <Switch>
               <Route exact path='/' render={() => <Main data={data}  title='About' />} />
-              <Route path='/repos' render={() => <Main data={(data.filter(  item => item.owner.login === 'booellean'))}  title='Repositories' />}/>
-              <Route path='/open-source' render={() => <Main data={(data.filter( item => item.owner.login !== 'booellean'))} title='Open Source'  />}/>
+              <Route path='/repos' render={() => <Main data={data}  title='About' />}  title='Repositories' />}/>
+              <Route path='/open-source' render={() => <Main data={data}  title='About' />} title='Open Source'  />}/>
               <Redirect to='/404' component={NotFound} />
           </Switch>
         <Footer />

@@ -135,7 +135,91 @@ const preRender = {
         res.status(404).send('Bad Request');
       })
     );
-  }
+  },
+
+  renderRepoInfo : (reqId) =>{
+    return (
+      fetch(`https://api.github.com/repos/booellean/${reqId}`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${config.OAUTH}`
+        }
+      })
+      .then( res => {
+        return res.json();
+      })
+      .then( res =>{
+        return [res];
+      })
+      .then( res =>{
+        let markup = {
+          initialMarkup: renderToString(<StaticRouter location={reqId.url}><App github={JSON.stringify(res)}/></StaticRouter>),
+          initialData: res
+        };
+        return markup
+
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(404).send('Bad Request');
+      })
+    );
+  },
+
+  renderOrgInfo : (reqId) =>{
+    return (
+      fetch(`https://api.github.com/orgs/${reqId}/repos`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${config.OAUTH}`
+        }
+      })
+      .then( res => {
+        return res.json();
+      })
+      .then( res =>{
+        return Promise.all( res.map( item =>{
+          const original = item
+          return(
+            fetch(`${item.contributors_url}`, {
+              method: 'GET',
+              mode: 'cors',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${config.OAUTH}`
+              }
+              })
+              .then( res =>{
+                return res.json()
+              })
+              .then( res =>{
+                original['contributorsUrl'] = res;
+                return original;
+              })
+              .catch( error =>{
+                console.error( error );
+                return {error: 'Organizations not Found!'}
+              })
+          );
+        }));
+      })
+      .then( res =>{
+        let markup = {
+          initialMarkup: renderToString(<StaticRouter location={reqId.url}><App github={JSON.stringify(res)}/></StaticRouter>),
+          initialData: res
+        };
+        return markup
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(404).send('Bad Request');
+      })
+    );
+  },
 }
 
 export default preRender;
