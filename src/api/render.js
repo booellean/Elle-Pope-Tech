@@ -207,6 +207,13 @@ const preRender = {
           );
         }));
       })
+      // .then( res =>{
+      //   return res.forEach( item =>{
+      //     item.contributorsUrl.filter( obj =>{
+      //       return obj.login === config.user;
+      //     })
+      //   })
+      // })
       .then( res =>{
         let markup = {
           initialMarkup: renderToString(<StaticRouter location={reqId.url}><App github={JSON.stringify(res)}/></StaticRouter>),
