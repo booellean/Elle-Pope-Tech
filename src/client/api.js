@@ -12,10 +12,18 @@ export const fetchOrg = orgId => {
 
 export const fetchRepos= () => {
   return axios.get(`/api/repos`)
-    .then( res => res.data);
+    .then( res => res)
+    .catch( error =>{
+      console.log(error);
+      return error;
+    })
 };
 
 export const fetchUserStats= () => {
   return axios.get('/api/user')
-    .then( res => res.data);
+    .then( res => res)
+    .catch( error =>{
+      console.log(error);
+      return error;
+    })
 };

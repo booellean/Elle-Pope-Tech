@@ -1,9 +1,5 @@
 import React from 'react';
 import fetch from 'node-fetch';
-import { renderToString } from 'react-dom/server';
-import { StaticRouter } from 'react-router';
-
-import App from '../shared/App';
 import config from './config';
 
 const repo_URL = `https://api.github.com/users/${config.user}/repos?per_page=${config.perPage}`;
@@ -23,14 +19,6 @@ const renderFetch = {
       })
       .then( res => {
         return res.json();
-      })
-      .then( res =>{
-        let markup = {
-          initialMarkup: renderToString(<StaticRouter location={req.url}><App github={JSON.stringify(res)}/></StaticRouter>),
-          initialData: res
-        };
-        return markup
-
       })
       .catch(error => {
         console.error(error);
@@ -54,14 +42,6 @@ const renderFetch = {
       })
       .then( res =>{
         return [res];
-      })
-      .then( res =>{
-        let markup = {
-          initialMarkup: renderToString(<StaticRouter location={req.url}><App github={JSON.stringify(res)}/></StaticRouter>),
-          initialData: res
-        };
-        return markup
-
       })
       .catch(error => {
         console.error(error);
@@ -123,12 +103,7 @@ const renderFetch = {
         }))
       })
       .then( res =>{
-        let markup = {
-          initialMarkup: renderToString(<StaticRouter location={req.url}><App github={JSON.stringify(res)}/></StaticRouter>),
-          initialData: res
-        };
-        return markup
-
+        return res;
       })
       .catch(error => {
         console.error(error);
@@ -152,14 +127,6 @@ const renderFetch = {
       })
       .then( res =>{
         return [res];
-      })
-      .then( res =>{
-        let markup = {
-          initialMarkup: renderToString(<StaticRouter location={reqId.url}><App github={JSON.stringify(res)}/></StaticRouter>),
-          initialData: res
-        };
-        return markup
-
       })
       .catch(error => {
         console.error(error);
@@ -225,13 +192,6 @@ const renderFetch = {
           res = [ {message :"There are No Contributions for this User!"} ];
         }
         return res;
-      })
-      .then( res =>{
-        let markup = {
-          initialMarkup: renderToString(<StaticRouter location={reqId.url}><App github={JSON.stringify(res)}/></StaticRouter>),
-          initialData: res
-        };
-        return markup
       })
       .catch(error => {
         console.error(error);

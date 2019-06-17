@@ -1,15 +1,20 @@
 import express from 'express';
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { StaticRouter } from 'react-router';
 import renderFetch from '../api/render';
 import config from '../api/config';
 import apiRouter from '../api/index';
 
+import App from '../shared/App';
+
 const app = express();
 
-app.use('../api', apiRouter);
+app.use('/api', apiRouter);
 app.use(express.static('public'));
 
 //Initial Markup Rendered
-const renderPage = (data) =>{
+const renderPage = (req, data) =>{
   return(`
   <!DOCTYPE html>
   <html>
@@ -19,9 +24,9 @@ const renderPage = (data) =>{
       <script src='/bundle.js' defer></script>
     </head>
     <body>
-      <div id='root'>${data.initialMarkup}</div>
+      <div id='root'>${renderToString(<StaticRouter location={req.url}><App github={JSON.stringify(data)}/></StaticRouter>)}</div>
       <script type="text/javascript">
-        window.initialData = ${JSON.stringify(data.initialData)};
+        window.initialData = ${JSON.stringify(data)};
       </script>
     </body>
   </html>
@@ -32,7 +37,7 @@ const renderPage = (data) =>{
 app.get('/', (req, res) => {
   renderFetch.renderUserStats(req)
   .then( ( data ) =>{
-    res.send(renderPage(data));
+    res.send(renderPage(req, data));
   })
   .catch(error => {
     console.error(error);
@@ -43,7 +48,7 @@ app.get('/', (req, res) => {
 app.get('/repos', (req, res) => {
   renderFetch.renderUserRepos(req)
   .then( ( data ) =>{
-    res.send(renderPage(data));
+    res.send(renderPage(req, data));
   })
   .catch(error => {
     console.error(error);
@@ -54,7 +59,7 @@ app.get('/repos', (req, res) => {
 app.get('/open-source', (req, res) => {
   renderFetch.renderContribRepos(req)
   .then( ( data ) =>{
-    res.send(renderPage(data));
+    res.send(renderPage(req, data));
   })
   .catch(error => {
     console.error(error);
@@ -65,7 +70,7 @@ app.get('/open-source', (req, res) => {
 app.get('/open-source/:itemId', (req, res) => {
   renderFetch.renderOrgInfo(req.params.itemId)
   .then( ( data ) =>{
-    res.send(renderPage(data));
+    res.send(renderPage(req, data));
   })
   .catch(error => {
     console.error(error);
@@ -76,7 +81,7 @@ app.get('/open-source/:itemId', (req, res) => {
 app.get('/repos/:itemId', (req, res) => {
   renderFetch.renderRepoInfo(req.params.itemId)
   .then( ( data ) =>{
-    res.send(renderPage(data));
+    res.send(renderPage(req, data));
   })
   .catch(error => {
     console.error(error);

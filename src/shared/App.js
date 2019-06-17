@@ -14,19 +14,24 @@ export default class App extends Component {
   }
 
   fetchUserStats = () =>{
-    return api.fetchUserStats();
+    return api.fetchRepos();
+  }
+
+  componentDidMount(){
   }
 
   render(){
     let data;
     if(this.props.github){
       data = JSON.parse(this.props.github);
+    }else{
+      data = this.fetchUserStats();
     }
     return (
       <div className='App'>
         <Header />
         <Switch>
-              <Route exact path='/' render={() => <Main data={this.fetchUserStats}  title='About' />} />
+              <Route exact path='/' render={() => <Main data={data}  title='About' />} />
               <Route path='/repos' render={() => <Main data={data}  title='About' />}  title='Repositories' />}/>
               <Route path='/open-source' render={() => <Main data={data}  title='About' />} title='Open Source'  />}/>
               <Redirect to='/404' component={NotFound} />

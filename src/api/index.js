@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/user', (req, res) =>{
   renderFetch.renderUserStats(req)
   .then( ( data ) =>{
-    res.send(data.initialData);
+    res.send(data);
   })
   .catch(error => {
     console.error(error);
@@ -18,7 +18,7 @@ router.get('/user', (req, res) =>{
 router.get('/repos/:repoId', (req, res) => {
   renderFetch.renderRepoInfo(req.params.repoId)
   .then( ( data ) =>{
-    res.send(data.initialData);
+    res.send(data);
   })
   .catch(error => {
     console.error(error);
@@ -29,7 +29,7 @@ router.get('/repos/:repoId', (req, res) => {
 router.get('/open-source/:orgId', (req, res) => {
   renderFetch.renderOrgInfo(req.params.orgId)
   .then( ( data ) =>{
-    res.send(data.initialData);
+    res.send(data);
   })
   .catch(error => {
     console.error(error);
@@ -40,7 +40,8 @@ router.get('/open-source/:orgId', (req, res) => {
 router.get('/repos', (req, res) => {
   renderFetch.renderUserRepos(req)
   .then( ( data ) =>{
-    res.send(data.initialData);
+    console.log(data);
+    res.send(data);
   })
   .catch(error => {
     console.error(error);
@@ -52,7 +53,7 @@ router.get('/repos', (req, res) => {
 router.get('/open-source', (req, res) => {
   renderFetch.renderContribRepos(req)
   .then( ( data ) =>{
-    res.send(data.initialData);
+    res.send(data);
   })
   .catch(error => {
     console.error(error);
