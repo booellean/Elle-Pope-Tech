@@ -10,7 +10,7 @@ const repo_URL = `https://api.github.com/users/${config.user}/repos?per_page=${c
 const user_URL = `https://api.github.com/users/${config.user}`;
 const contrib_URL = `https://www.github.com/${config.user}?per_page=${config.perPage}`;
 
-const preRender = {
+const renderFetch = {
   renderUserRepos : (req) =>{
     return (
       fetch(repo_URL, {
@@ -183,7 +183,7 @@ const preRender = {
       })
       .then( res =>{
         return Promise.all( res.map( item =>{
-          const original = item
+          let original = item
           return(
             fetch(`${item.contributors_url}`, {
               method: 'GET',
@@ -197,7 +197,15 @@ const preRender = {
                 return res.json()
               })
               .then( res =>{
-                original['contributorsUrl'] = res;
+                //set a new object in object that holds all contributors and their contributions
+                original['contributorsList'] = res;
+                return res.filter( contributor => contributor.login === config.user );
+              })
+              .then( res =>{
+                if(res.length <= 0){
+                  //if no contributions in repo were made, set original item to null
+                  original = null;
+                }
                 return original;
               })
               .catch( error =>{
@@ -207,13 +215,17 @@ const preRender = {
           );
         }));
       })
-      // .then( res =>{
-      //   return res.forEach( item =>{
-      //     item.contributorsUrl.filter( obj =>{
-      //       return obj.login === config.user;
-      //     })
-      //   })
-      // })
+      .then( res =>{
+        //filter out all null values in arrray
+        return res.filter( item => item);
+      })
+      .then( res =>{
+        //Did the user make no contributions to the organization???
+        if(res.length === 0){
+          res = [ {message :"There are No Contributions for this User!"} ];
+        }
+        return res;
+      })
       .then( res =>{
         let markup = {
           initialMarkup: renderToString(<StaticRouter location={reqId.url}><App github={JSON.stringify(res)}/></StaticRouter>),
@@ -229,4 +241,4 @@ const preRender = {
   },
 }
 
-export default preRender;
+export default renderFetch;

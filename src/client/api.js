@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const fetchRepo = contestId => {
+export const fetchRepo = repoId => {
   return axios.get(`/api/repos/${repoId}`)
     .then( res => res.data);
 };
@@ -15,7 +15,7 @@ export const fetchRepos= () => {
     .then( res => res.data);
 };
 
-export const fetchProgrammer = () => {
-  return axios.get('/api/programmer')
+export const fetchUserStats= () => {
+  return axios.get('/api/user')
     .then( res => res.data);
 };
