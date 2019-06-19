@@ -19,6 +19,15 @@ export const fetchRepos= () => {
     })
 };
 
+export const fetchOrgs= () => {
+  return axios.get(`/api/open-source`)
+    .then( res => res)
+    .catch( error =>{
+      console.log(error);
+      return error;
+    })
+};
+
 export const fetchUserStats= () => {
   return axios.get('/api/user')
     .then( res => res)

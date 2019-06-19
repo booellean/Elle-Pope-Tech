@@ -4,18 +4,28 @@ import Page from './PageComponent';
 class Main extends Component {
   constructor(props){
     super(props);
+
+    this.state = {
+      initialData : null,
+      userStats: null,
+      userRepos: null,
+      userContribs: null,
+      repo: null,
+      org: null
+    }
   }
 
   componentDidMount(){
-    // console.log(this.props.data);
+    // let currentPage = window.location.split('/').pop();
+    console.log(window.location.pathname);
+    console.log(this.props.fetchInitialData());
   }
 
   render(){
 
     const listItems = this.props.data.map(  item => {
         return(
-          // <li>{item.owner.login}</li>
-          <li>{JSON.stringify(item)}</li>
+          <li key={item.id}>{JSON.stringify(item)}</li>
         );
       });
 
