@@ -1,10 +1,10 @@
 import React from 'react';
-import fetch from 'node-fetch';
+import fetch from 'isomorphic-fetch';
 import config from './config';
 
 const repo_URL = `https://api.github.com/users/${config.user}/repos?per_page=${config.perPage}`;
 const user_URL = `https://api.github.com/users/${config.user}`;
-const contrib_URL = `https://www.github.com/${config.user}?per_page=${config.perPage}`;
+const contrib_URL = `https://www.github.com/${config.user}`;
 
 const renderFetch = {
   renderUserRepos : (req) =>{
@@ -57,7 +57,11 @@ const renderFetch = {
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${config.OAUTH}`
+          'Authorization': `Bearer ${config.OAUTH}`,
+          'Access-Control-Allow-Credentials' : 'true',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET',
+          'Access-Control-Allow-Headers': '*'
         }
       })
       .then( res => {

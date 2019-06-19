@@ -16,9 +16,9 @@ class Main extends Component {
   }
 
   componentDidMount(){
-    // let currentPage = window.location.split('/').pop();
-    console.log(window.location.pathname);
-    console.log(this.props.fetchInitialData());
+    let currentPage = window.location.pathname.split('/').pop();
+    console.log(currentPage);
+    console.log(this.props.fetchInitialData(currentPage));
   }
 
   render(){

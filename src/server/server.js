@@ -2,6 +2,7 @@ import express from 'express';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter, matchPath } from 'react-router-dom';
+import { matchRoutes } from 'react-router-config';
 import routes from '../shared/routes';
 // import renderFetch from '../api/render';
 import config from '../api/config';
@@ -38,23 +39,30 @@ const renderPage = (req, data) =>{
 
 app.get('*', (req, res, next) =>{
 
-    // console.log(req.url);
-    // console.log(routes);
+  // const currentRoute =
+  //   routes.find(route => matchPath(req.url, route)) || {};
+  // let promise;
 
-  const matchRoute = routes.find(
-    (route) => {
-      const matchProfile = matchPath(req.url, route);
-      // console.log(route);
-      return (matchProfile && matchProfile.params) || {};
+  // if (currentRoute.fetchInitialData) {
+  //   let id = req.path.split('/').pop();
+  //   promise = currentRoute.fetchInitialData(id);
+  // } else {
+  //   promise = Promise.resolve(null);
+  // }
+
+  const matchingRoutes = matchRoutes(routes, req.url);
+  let promises = [];
+
+  matchingRoutes.forEach(obj => {
+    let id = req.path.split('/').pop();
+    console.log(id);
+    if (obj.route.fetchInitialData) {
+      promises.push(obj.route.fetchInitialData(id));
     }
-  )
+  });
 
-  const activeRoute = routes.filter( (route) => route.path === req.url)[0]
-
-  console.log(matchRoute)
-  console.log(activeRoute);
-
-  activeRoute.fetchInitialData(req.path)
+  Promise.all(promises)
+  // promise
   .then( (data) =>{
     res.send(renderPage(req, data));
   })
