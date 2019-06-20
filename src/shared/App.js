@@ -43,10 +43,9 @@ export default class App extends Component {
     }
   }
 
-  setTheState(stateName, data){
-    if(this.state[stateName] && this.state[stateName] !== '_blank'){
-      setState({ [stateName] : data})
-    }
+  setTheState(name, func){
+    this.setState({ [name] : this.data })
+    return data;
   }
 
   componentDidMount(){
@@ -59,13 +58,13 @@ export default class App extends Component {
       <div className='App'>
         <Header />
         <Switch>
-          {routes.map( ({ path, exact, component: C, ...rest} ) => (
+          {routes.map( ({ path, exact, component: C, ...rest, name} ) => (
             <Route
               key={path}
               path={path}
               exact={exact}
               render={ () => (
-              <C data={this.props.github} loc={this.props.location} {...rest}/>
+              <C data={this.state[name] === '_blank' ? this.setTheState(name, ...rest) : this.state[name] } loc={this.props.location} {...rest}/>
                 )}
               />
             ))}
