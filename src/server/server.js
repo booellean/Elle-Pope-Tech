@@ -27,7 +27,7 @@ const renderPage = (req, data) =>{
         <script src='/bundle.js' defer></script>
       </head>
       <body>
-        <div id='root'>${renderToString(<StaticRouter location={req.url} context={{}}><App github={data}/></StaticRouter>)}</div>
+        <div id='root'>${renderToString(<StaticRouter location={req.url} context={{}}><App github={data} location={req.url}/></StaticRouter>)}</div>
         <script type="text/javascript">
           window.initialData = ${JSON.stringify(data)};
         </script>
@@ -38,17 +38,6 @@ const renderPage = (req, data) =>{
 }
 
 app.get('*', (req, res, next) =>{
-
-  // const currentRoute =
-  //   routes.find(route => matchPath(req.url, route)) || {};
-  // let promise;
-
-  // if (currentRoute.fetchInitialData) {
-  //   let id = req.path.split('/').pop();
-  //   promise = currentRoute.fetchInitialData(id);
-  // } else {
-  //   promise = Promise.resolve(null);
-  // }
 
   const matchingRoutes = matchRoutes(routes, req.url);
   let promises = [];
@@ -62,7 +51,6 @@ app.get('*', (req, res, next) =>{
   });
 
   Promise.all(promises)
-  // promise
   .then( (data) =>{
     res.send(renderPage(req, data));
   })
@@ -71,61 +59,6 @@ app.get('*', (req, res, next) =>{
     res.status(404).send('Bad Request');
   });
 })
-//Routes
-// app.get('/', (req, res) => {
-//   renderFetch.renderUserStats(req)
-//   .then( ( data ) =>{
-//     res.send(renderPage(req, data));
-//   })
-//   .catch(error => {
-//     console.error(error);
-//     res.status(404).send('Bad Request');
-//   });
-// });
-
-// app.get('/repos', (req, res) => {
-//   renderFetch.renderUserRepos(req)
-//   .then( ( data ) =>{
-//     res.send(renderPage(req, data));
-//   })
-//   .catch(error => {
-//     console.error(error);
-//     res.status(404).send('Bad Request');
-//   });
-// });
-
-// app.get('/open-source', (req, res) => {
-//   renderFetch.renderContribRepos(req)
-//   .then( ( data ) =>{
-//     res.send(renderPage(req, data));
-//   })
-//   .catch(error => {
-//     console.error(error);
-//     res.status(404).send('Bad Request');
-//   });
-// });
-
-// app.get('/open-source/:itemId', (req, res) => {
-//   renderFetch.renderOrgInfo(req.params.itemId)
-//   .then( ( data ) =>{
-//     res.send(renderPage(req, data));
-//   })
-//   .catch(error => {
-//     console.error(error);
-//     res.status(404).send('Bad Request');
-//   });
-// });
-
-// app.get('/repos/:itemId', (req, res) => {
-//   renderFetch.renderRepoInfo(req.params.itemId)
-//   .then( ( data ) =>{
-//     res.send(renderPage(req, data));
-//   })
-//   .catch(error => {
-//     console.error(error);
-//     res.status(404).send('Bad Request');
-//   });
-// });
 
 app.listen(config.port, config.host, () => {
   console.log(`Server is listening on ${config.host}:${config.port}`);

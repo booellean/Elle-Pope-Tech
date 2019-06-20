@@ -4,21 +4,10 @@ import Page from './PageComponent';
 class Main extends Component {
   constructor(props){
     super(props);
-
-    this.state = {
-      initialData : null,
-      userStats: null,
-      userRepos: null,
-      userContribs: null,
-      repo: null,
-      org: null
-    }
   }
 
   componentDidMount(){
-    let currentPage = window.location.pathname.split('/').pop();
-    console.log(currentPage);
-    console.log(this.props.fetchInitialData(currentPage));
+    console.log(this.props.fetchInitialData())
   }
 
   render(){
