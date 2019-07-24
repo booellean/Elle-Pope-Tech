@@ -25,14 +25,14 @@ export default class App extends Component {
     }
 
     this.state = {
-      '': '_blank',
-      'repos': '_blank',
-      'open-source': '_blank',
-      'repo': '_blank',
-      'org': '_blank'
+      '': null,
+      'repos': null,
+      'open-source': null,
+      'repo': null,
+      'org': null
     }
 
-    if(this.state[loc] && this.state[loc] === '_blank'){
+    if(this.state[loc] === null){
       this.state[loc] = data;
     }else if(!this.state[loc] && this.props.location.search('repos') > -1){
       this.state['repo'] = data;
@@ -43,13 +43,11 @@ export default class App extends Component {
     }
   }
 
-  setTheState(name, func){
-    this.setState({ [name] : this.data })
-    return data;
-  }
-
-  componentDidMount(){
-    // console.log(this.props.staticContext);
+  //update state from children that are rendered for the first time. Avoids unnecessary loading
+  updateTheState(name, newState){
+    this.setState({
+      [name] : newState
+    })
   }
 
   render(){
@@ -64,7 +62,12 @@ export default class App extends Component {
               path={path}
               exact={exact}
               render={ () => (
-              <C data={this.state[name] === '_blank' ? this.setTheState(name, ...rest) : this.state[name] } loc={this.props.location} {...rest}/>
+                // <C data={this.state[name] || this.props.github} {...rest} stateName={name}/>
+                <C data={this.state[name]}
+                  {...rest}
+                  stateName={name}
+                  updateTheState={this.updateTheState.bind(this)}
+                  />
                 )}
               />
             ))}
