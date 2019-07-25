@@ -29,7 +29,7 @@ const renderPage = (req, data) =>{
       <body>
         <div id='root'>${renderToString(<StaticRouter location={req.url} context={{}}><App github={data} location={req.url}/></StaticRouter>)}</div>
         <script type="text/javascript">
-          window.initialData = ${JSON.stringify(data)};
+          window.initialData = ${data};
         </script>
       </body>
     </html>
