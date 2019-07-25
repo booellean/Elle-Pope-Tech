@@ -4,7 +4,7 @@ import config from './config';
 
 const repo_URL = `https://api.github.com/users/${config.user}/repos?per_page=${config.perPage}`;
 const user_URL = `https://api.github.com/users/${config.user}`;
-const contrib_URL = `https://www.github.com/${config.user}`;
+const contrib_URL = `https://github.com/${config.user}`;
 
 const renderFetch = {
   renderUserRepos : (req) =>{
@@ -60,10 +60,22 @@ const renderFetch = {
           'Authorization': `Bearer ${config.OAUTH}`,
           'Access-Control-Allow-Credentials' : 'true',
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET',
+          'Access-Control-Allow-Methods': '*',
           'Access-Control-Allow-Headers': '*'
-        }
+        },
+        body: null
       })
+      // fetch(contrib_URL, {
+      //   method: 'GET',
+      //   // mode: 'cors',
+      //   // cache: 'no-cache',
+      //   headers : {
+      //     'Content-Type': 'text/html; charset=utf-8',
+      //     'Access-Control-Allow-Origin' : '*',
+      //     'Access-Control-Allow-Methods': '*',
+      //     'Access-Control-Allow-Headers': '*'
+      //   }
+      // })
       .then( res => {
         return res.text();
       })
