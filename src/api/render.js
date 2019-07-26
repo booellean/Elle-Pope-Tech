@@ -147,7 +147,7 @@ const renderFetch = {
 
   renderRepoInfo : (reqId) =>{
     return (
-      fetch(`https://api.github.com/repos/booellean/${reqId}`, {
+      fetch(`https://api.github.com/repos/${config.user}/${reqId}`, {
         method: 'GET',
         mode: 'cors',
         headers: {
@@ -159,7 +159,7 @@ const renderFetch = {
         return res.json();
       })
       .then( res =>{
-        return preRender({ repo: res });
+        return preRender({ repo: [res] });
       })
       .catch(error => {
         console.error(error);
