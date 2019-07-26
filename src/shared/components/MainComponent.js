@@ -17,11 +17,14 @@ class Main extends Component {
       return this.props.fetchInitialData()
       .then( data =>{
         this.setState({ info: data });
-        this.props.updateTheState(this.props.stateName, data);
+        if(data.isCombinedInfo){
+          this.props.updateTheState(null, data);
+        }else{
+          this.props.updateTheState(this.props.stateName, data);
+        }
       });
     }
   }
-
 
   render(){
 
@@ -29,9 +32,9 @@ class Main extends Component {
      //Put Loading bar here;
      return false;
    }else{
-    const listItems = this.state.info.map(  item => {
+    const listItems = this.state.info.map( item => {
         return(
-          <li key={item.id}>{JSON.stringify(item)}</li>
+          <li key={item.id}>{`${JSON.stringify(item.id)}: ${JSON.stringify(item)}`}</li>
         );
       });
 

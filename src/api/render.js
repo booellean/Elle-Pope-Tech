@@ -2,14 +2,21 @@ import React from 'react';
 import fetch from 'isomorphic-fetch';
 import config from './config';
 
-const repo_URL = `https://api.github.com/users/${config.user}/repos?per_page=${config.perPage}`;
+let tmpArray = [];
+
+// const repo_URL = `https://api.github.com/users/${config.user}/repos?per_page=${config.perPage}`;
+const repo_URL = `https://api.github.com/user/repos?per_page=${config.perPage}`;
 const user_URL = `https://api.github.com/users/${config.user}`;
-const contrib_URL = `https://github.com/${config.user}`;
+// const contrib_URL = `https://github.com/${config.user}`;
+
 
 const renderFetch = {
-  renderUserRepos : (req) =>{
+  renderUserRepos : (req, url, page) =>{
+    // let thisUrl = url;
+    // let thisPage = page;
+    // let thisReq = req;
     return (
-      fetch(repo_URL, {
+      fetch(`${url}&page=${page}`, {
         method: 'GET',
         mode: 'cors',
         headers: {
@@ -20,6 +27,16 @@ const renderFetch = {
       .then( res => {
         return res.json();
       })
+      .then( res =>{
+        if(res.length === config.perPage){
+          tmpArray.push(...res);
+          return renderFetch.renderUserRepos(req, url, page+1);
+        }else{
+          tmpArray.push(...res);
+          let finalObj = [{isCombinedInfo: true, allData: tmpArray}];
+          return finalObj;
+        }
+      })
       .catch(error => {
         console.error(error);
         res.status(404).send('Bad Request');
@@ -27,9 +44,9 @@ const renderFetch = {
     );
   },
 
-  renderUserStats : (req) =>{
+  renderUserStats : (req, url) =>{
     return (
-      fetch(user_URL, {
+      fetch(url, {
         method: 'GET',
         mode: 'cors',
         headers: {
@@ -50,83 +67,73 @@ const renderFetch = {
     );
   },
 
-  renderContribRepos : (req) =>{
-    return (
-      fetch(contrib_URL, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${config.OAUTH}`,
-          'Access-Control-Allow-Credentials' : 'true',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': '*',
-          'Access-Control-Allow-Headers': '*'
-        },
-        body: null
-      })
-      // fetch(contrib_URL, {
-      //   method: 'GET',
-      //   // mode: 'cors',
-      //   // cache: 'no-cache',
-      //   headers : {
-      //     'Content-Type': 'text/html; charset=utf-8',
-      //     'Access-Control-Allow-Origin' : '*',
-      //     'Access-Control-Allow-Methods': '*',
-      //     'Access-Control-Allow-Headers': '*'
-      //   }
-      // })
-      .then( res => {
-        return res.text();
-      })
-      .then( res => {
-        //split text into an array split by space
-        return res.split(' ');
-      })
-      .then( res => {
-        //filter out all object that don't start with '@'
-        //This will leave you with a messy list of organizations you've contributed to
-        return res.filter( item => item.indexOf('@') === 0 )
-      })
-      .then( res => {
-        //Clean up all the gobbly gook
-        //organization name will exist between '@' and first '\'
-        return res.map( item => {
-          let startPos = item.indexOf('@') + 1;
-          let endPos = item.indexOf(`\n`);
-          return item.substring(startPos, endPos)
-        })
-      })
-      .then( res =>{
-        return Promise.all( res.map ( item =>{
-          return(
-            fetch(`https://api.github.com/orgs/${item}`, {
-              method: 'GET',
-              mode: 'cors',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${config.OAUTH}`
-              }
-            })
-            .then( res =>{
-              return res.json();
-            })
-            .catch( error =>{
-              console.error( error );
-              return {error: 'Organizations not Found!'}
-            })
-          );
-        }))
-      })
-      .then( res =>{
-        return res;
-      })
-      .catch(error => {
-        console.error(error);
-        res.status(404).send('Bad Request');
-      })
-    );
-  },
+  //Too many limitations with the below code, especially with preflight requests. Will need to Go with another method
+  // renderContribRepos : (req) =>{
+  //   return (
+  //     fetch(contrib_URL, {
+  //       method: 'GET',
+  //       mode: 'cors',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${config.OAUTH}`,
+  //         'Access-Control-Allow-Credentials' : 'true',
+  //         'Access-Control-Allow-Origin': '*',
+  //         'Access-Control-Allow-Methods': '*',
+  //         'Access-Control-Allow-Headers': '*'
+  //       },
+  //       body: null
+  //     })
+  //     .then( res => {
+  //       return res.text();
+  //     })
+  //     .then( res => {
+  //       //split text into an array split by space
+  //       return res.split(' ');
+  //     })
+  //     .then( res => {
+  //       //filter out all object that don't start with '@'
+  //       //This will leave you with a messy list of organizations you've contributed to
+  //       return res.filter( item => item.indexOf('@') === 0 )
+  //     })
+  //     .then( res => {
+  //       //Clean up all the gobbly gook
+  //       //organization name will exist between '@' and first '\'
+  //       return res.map( item => {
+  //         let startPos = item.indexOf('@') + 1;
+  //         let endPos = item.indexOf(`\n`);
+  //         return item.substring(startPos, endPos)
+  //       })
+  //     })
+  //     .then( res =>{
+  //       return Promise.all( res.map ( item =>{
+  //         return(
+  //           fetch(`https://api.github.com/orgs/${item}`, {
+  //             method: 'GET',
+  //             mode: 'cors',
+  //             headers: {
+  //               'Content-Type': 'application/json',
+  //               'Authorization': `Bearer ${config.OAUTH}`
+  //             }
+  //           })
+  //           .then( res =>{
+  //             return res.json();
+  //           })
+  //           .catch( error =>{
+  //             console.error( error );
+  //             return {error: 'Organizations not Found!'}
+  //           })
+  //         );
+  //       }))
+  //     })
+  //     .then( res =>{
+  //       return res;
+  //     })
+  //     .catch(error => {
+  //       console.error(error);
+  //       res.status(404).send('Bad Request');
+  //     })
+  //   );
+  // },
 
   renderRepoInfo : (reqId) =>{
     return (

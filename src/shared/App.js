@@ -21,11 +21,12 @@ export default class App extends Component {
     }else{
       data = window.initialData;
       loc = window.location.pathname;
+      console.log(data, loc);
       delete window.initialData;
     }
 
     this.state = {
-      '': null,
+      '/': null,
       'repos': null,
       'open-source': null,
       'repo': null,
@@ -33,21 +34,35 @@ export default class App extends Component {
     }
 
     if(this.state[loc] === null){
-      this.state[loc] = data;
+      console.log("name method called");
+      return this.state[loc] = data;
     }else if(!this.state[loc] && this.props.location.search('repos') > -1){
-      this.state['repo'] = data;
+      return this.state['repo'] = data;
     }else if(!this.state[loc] && this.props.location.search('open-source') > -1){
-      this.state['org'] = data;
+      return this.state['org'] = data;
     }else{
-      console.log(`error: No state found for these props!`);
+      // console.log("updateTheState called");
+      // return this.updateTheState(null, data);
     }
   }
 
   //update state from children that are rendered for the first time. Avoids unnecessary loading
   updateTheState(name, newState){
-    this.setState({
-      [name] : newState
-    })
+    //if name is null, this is all the combined data from repos and must be split
+    if(name === null){
+      let arr = newState.allData;
+
+      let personalRepos = arr.map( item => item.owner.login === 'booellean' && item.fork === false && item.private !== true);
+
+      let contribRepos = arr.map( item => item.owner.login !== 'booellean' || item.fork === true);
+
+      this.updateTheState('repos', personalRepos);
+      this.updateTheState('open-source', contribRepos);
+    }else{
+      this.setState({
+        [name] : newState
+      })
+    }
   }
 
   render(){

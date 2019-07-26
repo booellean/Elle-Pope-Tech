@@ -52,6 +52,7 @@ app.get('*', (req, res, next) =>{
 
   Promise.all(promises)
   .then( (data) =>{
+    data.forEach(item => JSON.stringify(item));
     res.send(renderPage(req, data));
   })
   .catch(error => {

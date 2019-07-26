@@ -2,10 +2,13 @@ import express from 'express';
 import renderFetch from './render';
 import config from './config';
 
+const repo_URL = `https://api.github.com/user/repos?per_page=${config.perPage}`;
+const user_URL = `https://api.github.com/users/${config.user}`;
+
 const router = express.Router();
 
 router.get('/user', (req, res) =>{
-  renderFetch.renderUserStats(req)
+  renderFetch.renderUserStats(req, user_URL)
   .then( ( data ) =>{
     res.send(data);
   })
@@ -38,9 +41,8 @@ router.get('/open-source/:orgId', (req, res) => {
 });
 
 router.get('/repos', (req, res) => {
-  renderFetch.renderUserRepos(req)
+  renderFetch.renderUserRepos(req, repo_URL, 1)
   .then( ( data ) =>{
-    console.log(data);
     res.send(data);
   })
   .catch(error => {
