@@ -9,9 +9,13 @@ const repo_URL = `https://api.github.com/user/repos?per_page=${config.perPage}`;
 const user_URL = `https://api.github.com/users/${config.user}`;
 // const contrib_URL = `https://github.com/${config.user}`;
 
+// Need to stringify data before it is sent to the server, some sort of bug in the package returns it as an array
+const preRender = (data) =>{
+  return JSON.stringify(data);
+}
 
 const renderFetch = {
-  renderUserRepos : (req, url, page) =>{
+  renderAllRepos : (req, url, page) =>{
     // let thisUrl = url;
     // let thisPage = page;
     // let thisReq = req;
@@ -30,11 +34,17 @@ const renderFetch = {
       .then( res =>{
         if(res.length === config.perPage){
           tmpArray.push(...res);
-          return renderFetch.renderUserRepos(req, url, page+1);
+          return renderFetch.renderAllRepos(req, url, page+1);
         }else{
           tmpArray.push(...res);
-          let finalObj = [{isCombinedInfo: true, allData: tmpArray}];
-          return finalObj;
+          let personalRepos = tmpArray.filter( item => {
+            return item.owner.login === config.user && item.fork === false && item.private !== true;
+          });
+          let contribRepos = tmpArray.filter( item =>{
+            return item.owner.login !== config.user || item.fork === true;
+          });
+          let finalObj = { 'repos' : personalRepos, 'open-source': contribRepos};
+          return preRender(finalObj);
         }
       })
       .catch(error => {
@@ -58,7 +68,7 @@ const renderFetch = {
         return res.json();
       })
       .then( res =>{
-        return [res];
+        return preRender({ 'home' : [res] });
       })
       .catch(error => {
         console.error(error);
@@ -149,7 +159,7 @@ const renderFetch = {
         return res.json();
       })
       .then( res =>{
-        return [res];
+        return preRender({ repo: res });
       })
       .catch(error => {
         console.error(error);
@@ -212,9 +222,9 @@ const renderFetch = {
       .then( res =>{
         //Did the user make no contributions to the organization???
         if(res.length === 0){
-          res = [ {message :"There are No Contributions for this User!"} ];
+          res = ["There are No Contributions for this User!"];
         }
-        return res;
+        return preRender({ org : res });
       })
       .catch(error => {
         console.error(error);

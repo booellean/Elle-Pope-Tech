@@ -12,16 +12,16 @@ class Main extends Component {
 
   componentDidMount(){
     if(this.props.data !== null){
-      return this.setState({ info: this.props.data });
+      // return this.setState({ info: this.props.data });
+      this.setState({ info: this.props.data });
+      return console.log(this.state.info);
     }else{
       return this.props.fetchInitialData()
       .then( data =>{
-        this.setState({ info: data });
-        if(data.isCombinedInfo){
-          this.props.updateTheState(null, data);
-        }else{
-          this.props.updateTheState(this.props.stateName, data);
-        }
+        let newDat = JSON.parse(data);
+        this.setState({ info: newDat[this.props.name] });
+        this.props.updateTheState(newDat);
+        return console.log(this.state.info);
       });
     }
   }

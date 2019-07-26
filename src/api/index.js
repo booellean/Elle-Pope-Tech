@@ -41,7 +41,7 @@ router.get('/open-source/:orgId', (req, res) => {
 });
 
 router.get('/repos', (req, res) => {
-  renderFetch.renderUserRepos(req, repo_URL, 1)
+  renderFetch.renderAllRepos(req, repo_URL, 1)
   .then( ( data ) =>{
     res.send(data);
   })
@@ -53,7 +53,7 @@ router.get('/repos', (req, res) => {
 
 
 router.get('/open-source', (req, res) => {
-  renderFetch.renderContribRepos(req)
+  renderFetch.renderAllRepos(req, repo_URL, 1)
   .then( ( data ) =>{
     res.send(data);
   })

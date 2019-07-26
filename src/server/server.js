@@ -44,7 +44,6 @@ app.get('*', (req, res, next) =>{
 
   matchingRoutes.forEach(obj => {
     let id = req.path.split('/').pop();
-    console.log(id);
     if (obj.route.fetchInitialData) {
       promises.push(obj.route.fetchInitialData(id));
     }
@@ -52,7 +51,6 @@ app.get('*', (req, res, next) =>{
 
   Promise.all(promises)
   .then( (data) =>{
-    data.forEach(item => JSON.stringify(item));
     res.send(renderPage(req, data));
   })
   .catch(error => {

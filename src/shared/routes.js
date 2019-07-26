@@ -30,7 +30,7 @@ const routes = [
     path: '/repos',
     exact: false,
     component: Main,
-    fetchInitialData: (path='', url=repo_URL, page=1) =>{ return renderFetch.renderUserRepos(
+    fetchInitialData: (path='', url=repo_URL, page=1) =>{ return renderFetch.renderAllRepos(
       path.split('/').pop(), url, page
     )},
     name: 'repos'
@@ -39,8 +39,8 @@ const routes = [
     path: '/open-source',
     exact: false,
     component: Main,
-    fetchInitialData: (path='') =>{ return renderFetch.renderContribRepos(
-      path.split('/').pop()
+    fetchInitialData: (path='', url=repo_URL, page=1) =>{ return renderFetch.renderAllRepos(
+      path.split('/').pop(), url, page
     )},
     name: 'open-source'
   },
@@ -51,7 +51,7 @@ const routes = [
     fetchInitialData: (path='', url=user_URL) =>{ return renderFetch.renderUserStats(
       path.split('/').pop(), url
     )},
-    name: ''
+    name: 'home'
   },
 ]
 
