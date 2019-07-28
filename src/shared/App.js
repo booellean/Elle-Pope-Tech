@@ -6,7 +6,6 @@ import Main from './components/MainComponent';
 import NotFound from './components/NotFoundComponent';
 import { Switch, Route, Redirect} from 'react-router-dom';
 import routes from './routes';
-import * as api from '../client/api';
 import logo from './logo.svg';
 
 export default class App extends Component {

@@ -63,24 +63,18 @@ router.get('/open-source', (req, res) => {
   });
 });
 
-router.get('/programmer', (req, res) => {
-  // let contests = {};
-  // mdb.collection('contests').find({})
-  //   .project({
-  //     categoryName: 1,
-  //     contestName: 1
-  //   })
-  //   .each((err, contest) => {
-  //     assert.equal(null, err);
-
-  //     if (!contest) { // no more contests
-  //       res.send({ contests });
-  //       return;
-  //     }
-
-  //     contests[contest._id] = contest;
-  //   });
-  res.send('ProgrammerInfo');
+router.get('/details', (req, res, next) => {
+  let url = req.params.url;
+  let name = req.params.name;
+  console.log(req.params);
+  renderFetch.renderRepoUrlRequests(url, 1, name)
+  .then( (data) =>{
+    res.send(data);
+  })
+  .catch(error => {
+    console.error(error);
+    res.status(404).send('Bad Request');
+  });
 });
 
 export default router;

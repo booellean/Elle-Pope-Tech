@@ -1,5 +1,5 @@
 import Main from './components/MainComponent';
-// import * as api from '../client/api';
+import * as api from '../client/api';
 import renderFetch from '../api/render';
 
 import config from './../api/config';

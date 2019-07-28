@@ -16,98 +16,7 @@ const preRender = (data) =>{
 }
 
 const renderFetch = {
-  renderAllRepos : async (req, url, page, arr) =>{
-    return renderFetch.renderRepos(req, url, page, arr)
-    .then( res =>{
-      let arr = res;
-      let promiseArr = arr.map( repo =>{
-        return renderFetch.renderRepoUrlRequests(repo['commits_url'].split('{')[0], 1, repo, 'total_commits')
-                          .then( res =>{
-                            return res;
-                          })
-                          .catch(error => {
-                            console.error(error);
-                            return [];
-                          })
-      });
-      return Promise.all(promiseArr).then( arr =>{
-        return arr;
-      })
-      .then( arr=>{
-        console.log(arr);
-        let personalRepos = arr.filter( item => {
-          return item.owner.login === config.user && item.fork === false && item.private !== true;
-        });
-        let contribRepos = arr.filter( item =>{
-          return item.owner.login !== config.user || item.fork === true;
-        });
-
-        let finalObj = { 'repos' : personalRepos, 'open-source': contribRepos};
-        return preRender(finalObj);
-      } );
-    })
-    .then( arr =>{
-      console.log(arr);
-      let personalRepos = arr.filter( item => {
-        return item.owner.login === config.user && item.fork === false && item.private !== true;
-      });
-      let contribRepos = arr.filter( item =>{
-        return item.owner.login !== config.user || item.fork === true;
-      });
-
-      let finalObj = { 'repos' : personalRepos, 'open-source': contribRepos};
-      return preRender(finalObj);
-    })
-    // .then( arr =>{
-    //   console.log(arr);
-    //   let personalRepos = arr.filter( item => {
-    //     return item.owner.login === config.user && item.fork === false && item.private !== true;
-    //   });
-    //   let contribRepos = arr.filter( item =>{
-    //     return item.owner.login !== config.user || item.fork === true;
-    //   });
-
-    //   let finalObj = { 'repos' : personalRepos, 'open-source': contribRepos};
-    //   return preRender(finalObj);
-    // })
-          //  .then( arr =>{
-          //    console.log(arr);
-          // //    return Promise.all(arr.forEach( async repo =>{
-          // //     await renderFetch.renderRepoUrlRequests(repo['commits_url'].split('{')[0], 1)
-          // //       .then( res =>{
-          // //         console.log(res);
-          // //         return res.json();
-          // //       })
-          // //       .then( res =>{
-          // //         repo['total_commits'] = res;
-          // //         console.log(repo['total_commits']);
-          // //         return repo;
-          // //       })
-          // //       .catch(error => {
-          // //         console.error(error);
-          // //         res.status(404).send('Bad commits request');
-          // //         return [];
-          // //       })
-          // //    }));
-          // //  })
-          //  .then( arr =>{
-          //   //  console.log(arr);
-          //   //   let personalRepos = arr.filter( item => {
-          //   //     return item.owner.login === config.user && item.fork === false && item.private !== true;
-          //   //   });
-          //   //   let contribRepos = arr.filter( item =>{
-          //   //     return item.owner.login !== config.user || item.fork === true;
-          //   //   });
-
-          //   //   let finalObj = { 'repos' : personalRepos, 'open-source': contribRepos};
-          //   //   return preRender(finalObj);
-          //  })
-           .catch(error => {
-            console.error(error);
-          })
-  },
-
-  renderRepos : async (req, url, page, arr=[]) =>{
+  renderAllRepos : async (req, url, page, arr=[]) =>{
     let fullArray = arr;
     return(
       fetch(`${url}&page=${page}&per_page=${config.perPage}`, {
@@ -124,10 +33,17 @@ const renderFetch = {
       .then( res =>{
         fullArray.push(...res);
         if(res.length === config.perPage){
-          return renderFetch.renderRepos(req, url, page+1, fullArray);
+          return renderFetch.renderAllRepos(req, url, page+1, fullArray);
         }else{
-          console.log(fullArray);
-          return fullArray;
+            let personalRepos = fullArray.filter( item => {
+            return item.owner.login === config.user && item.fork === false && item.private !== true;
+          });
+          let contribRepos = fullArray.filter( item =>{
+            return item.owner.login !== config.user || item.fork === true;
+          });
+
+          let finalObj = { 'repos' : personalRepos, 'open-source': contribRepos};
+          return preRender(finalObj);
         }
       })
       .catch(error => {
@@ -136,7 +52,7 @@ const renderFetch = {
     );
   },
 
-  renderRepoUrlRequests : async (url, page, repo, name, arr=[]) =>{
+  renderRepoUrlRequests : async (url, page, name, arr=[]) =>{
     let fullArray = arr;
     return(
       fetch(`${url}?page=${page}&per_page=${config.perPage}`, {
@@ -153,17 +69,17 @@ const renderFetch = {
       .then( res =>{
         //If item is not array, error was thrown. return empty array
         if(!Array.isArray(res)){
-          res = [];
+          res = [res];
           return res;
         }
 
         //Otherwise push contents to array item and send all items to
         fullArray.push(...res);
         if(res.length === config.perPage){
-          return renderFetch.renderRepoUrlRequests(url, page+1, repo, name, fullArray);
+          return renderFetch.renderRepoUrlRequests(url, page+1, name, fullArray);
         }else{
-          repo[name] = fullArray;
-          return repo;
+          console.log(fullArray);
+          return fullArray;
         }
       })
       .catch(error => {
@@ -402,28 +318,3 @@ export default renderFetch;
           //             return [];
           //           })
           // });
-
-          // return Promise.all(getCommits)
-          // .then( data =>{
-          //   console.log(data);
-
-          //   let personalRepos = fullArray.filter( item => {
-          //     return item.owner.login === config.user && item.fork === false && item.private !== true;
-          //   });
-          //   let contribRepos = fullArray.filter( item =>{
-          //     return item.owner.login !== config.user || item.fork === true;
-          //   });
-
-          //   let finalObj = { 'repos' : personalRepos, 'open-source': contribRepos};
-          //   return preRender(finalObj);
-          // })
-
-          // let personalRepos = fullArray.filter( item => {
-          //   return item.owner.login === config.user && item.fork === false && item.private !== true;
-          // });
-          // let contribRepos = fullArray.filter( item =>{
-          //   return item.owner.login !== config.user || item.fork === true;
-          // });
-
-          // let finalObj = { 'repos' : personalRepos, 'open-source': contribRepos};
-          // return preRender(finalObj);

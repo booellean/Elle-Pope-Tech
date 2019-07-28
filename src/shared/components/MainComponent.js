@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Snippet from './SnippetComponent';
 import Page from './PageComponent';
 
 class Main extends Component {
@@ -26,6 +27,12 @@ class Main extends Component {
     }
   }
 
+  addToState = (data, name, repo) =>{
+    //update state when function is called for first time
+    //this.props.updateTheState will be used, activated from Snippet
+    //console.log(data, name, repo);
+  }
+
   createRepoNode = (item) =>{
     return(
       <li key={item.id}>
@@ -35,6 +42,9 @@ class Main extends Component {
           <p>Size: {item['size']}</p>
           <p>Created: {item['created_at']}</p>
           <p>Last Commit: {item['updated_at']}</p>
+          <Snippet repo={item} addToState={this.addToState.bind(this)} name='total_languages' title='Languages' url={item['languages_url']}/>
+          <Snippet repo={item} addToState={this.addToState.bind(this)} name='total_commits' title='Commits' url={item['commits_url'].split('{')[0]}/>
+          <Snippet repo={item} addToState={this.addToState.bind(this)} name='total_contributors' title='Contributors' url={item['contributors_url']}/>
         </details>
       </li>
     );

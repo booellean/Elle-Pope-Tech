@@ -36,3 +36,17 @@ export const fetchUserStats= () => {
       return error;
     })
 };
+
+export const fetchRepoUrl= (repoUrl, name) => {
+  return axios.get(`/api/details`, {
+    params: {
+      url: repoUrl,
+      name: name
+    }
+  })
+    .then( res => res)
+    .catch( error =>{
+      console.log(error);
+      return error;
+    })
+};
