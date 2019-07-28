@@ -14,16 +14,30 @@ class Main extends Component {
     if(this.props.data !== null){
       // return this.setState({ info: this.props.data });
       this.setState({ info: this.props.data });
-      return console.log(this.state.info);
+      // return console.log(this.state.info);
     }else{
       return this.props.fetchInitialData()
-      .then( data =>{
-        let newDat = JSON.parse(data);
-        this.setState({ info: newDat[this.props.name] });
-        this.props.updateTheState(newDat);
-        return console.log(this.state.info);
-      });
+          .then( data =>{
+            let newDat = JSON.parse(data);
+            this.setState({ info: newDat[this.props.name] });
+            this.props.updateTheState(newDat);
+            // return console.log(this.state.info);
+          });
     }
+  }
+
+  createRepoNode = (item) =>{
+    return(
+      <li key={item.id}>
+        <a href={item['html_ulr']} target="_blank"><h3>{item['name']}</h3></a>
+        <p>{item['description']}</p>
+        <details>
+          <p>Size: {item['size']}</p>
+          <p>Created: {item['created_at']}</p>
+          <p>Last Commit: {item['updated_at']}</p>
+        </details>
+      </li>
+    );
   }
 
   render(){
@@ -34,7 +48,7 @@ class Main extends Component {
    }else{
     const listItems = this.state.info.map( item => {
         return(
-          <li key={item.id}>{`${JSON.stringify(item.id)}: ${JSON.stringify(item)}`}</li>
+          this.createRepoNode(item)
         );
       });
 

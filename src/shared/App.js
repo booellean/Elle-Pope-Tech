@@ -51,7 +51,7 @@ export default class App extends Component {
       this.setState({
         [key] : data[key]
       })
-      console.log(this.state[key]);
+      // console.log(this.state[key]);
     })
   }
 
