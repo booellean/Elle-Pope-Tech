@@ -19,7 +19,7 @@ router.get('/user', (req, res) =>{
 })
 
 router.get('/repos/:repoId', (req, res) => {
-  renderFetch.renderRepoInfo(req.params.repoId)
+  renderFetch.renderRepoInfo(req.params.repoId, repo_URL)
   .then( ( data ) =>{
     res.send(data);
   })
@@ -30,7 +30,7 @@ router.get('/repos/:repoId', (req, res) => {
 });
 
 router.get('/open-source/:orgId', (req, res) => {
-  renderFetch.renderOrgInfo(req.params.orgId)
+  renderFetch.renderOrgInfo(req.params.orgId, config.openSource)
   .then( ( data ) =>{
     res.send(data);
   })
@@ -53,7 +53,7 @@ router.get('/repos', (req, res) => {
 
 
 router.get('/open-source', (req, res) => {
-  renderFetch.renderAllRepos(req, repo_URL, 1)
+  renderFetch.renderContribRepos(req, config.openSource)
   .then( ( data ) =>{
     res.send(data);
   })

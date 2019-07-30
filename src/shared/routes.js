@@ -1,4 +1,5 @@
-import Main from './components/MainComponent';
+import PersonalRepo from './components/PersonalRepoComponent';
+import ContribRepo from './components/ContribRepoComponent';
 import * as api from '../client/api';
 import renderFetch from '../api/render';
 
@@ -11,25 +12,25 @@ const routes = [
   {
     path: '/open-source/:orgId',
     exact: false,
-    component: Main,
-    fetchInitialData: (path='') =>{ return renderFetch.renderOrgInfo(
-      path.split('/').pop()
+    component: PersonalRepo,
+    fetchInitialData: (path='', arr=config.openSource) =>{ return renderFetch.renderOrgInfo(
+      path.split('/').pop(), arr
     )},
     name: 'org'
   },
   {
     path: '/repos/:repoId',
     exact: false,
-    component: Main,
-    fetchInitialData: (path='') =>{ return renderFetch.renderRepoInfo(
-      path.split('/').pop()
+    component: PersonalRepo,
+    fetchInitialData: (path='', url=repo_URL) =>{ return renderFetch.renderRepoInfo(
+      path.split('/').pop(), url
     )},
     name: 'repo'
   },
   {
     path: '/repos',
     exact: false,
-    component: Main,
+    component: PersonalRepo,
     fetchInitialData: (path='', url=repo_URL, page=1) =>{ return renderFetch.renderAllRepos(
       path.split('/').pop(), url, page
     )},
@@ -38,16 +39,16 @@ const routes = [
   {
     path: '/open-source',
     exact: false,
-    component: Main,
-    fetchInitialData: (path='', url=repo_URL, page=1) =>{ return renderFetch.renderAllRepos(
-      path.split('/').pop(), url, page
+    component: ContribRepo,
+    fetchInitialData: (path='', arr=config.openSource) =>{ return renderFetch.renderContribRepos(
+      path.split('/').pop(), arr
     )},
     name: 'open-source'
   },
   {
     path: '/',
     exact: true,
-    component: Main,
+    component: PersonalRepo,
     fetchInitialData: (path='', url=user_URL) =>{ return renderFetch.renderUserStats(
       path.split('/').pop(), url
     )},

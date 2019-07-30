@@ -1,36 +1,45 @@
 import React, { Component } from 'react';
-import Snippet from './SnippetComponent';
+import Language from './SnippetLanguageComponent';
+import Contributor from './SnippetContribComponent';
+import Commit from './SnippetCommitComponent';
 import Page from './PageComponent';
 
-class Main extends Component {
+class PersonalRepo extends Component {
   constructor(props){
     super(props);
 
     this.state = {
-      info : this.props.data
+      info : this.props.data,
+      languages : {}
     }
   }
 
   componentDidMount(){
     if(this.props.data !== null){
-      // return this.setState({ info: this.props.data });
       this.setState({ info: this.props.data });
-      // return console.log(this.state.info);
+      this.setState({ languages: this.props.data['languages-in-repo'] || {} });
     }else{
       return this.props.fetchInitialData()
           .then( data =>{
             let newDat = JSON.parse(data);
             this.setState({ info: newDat[this.props.name] });
-            this.props.updateTheState(newDat);
-            // return console.log(this.state.info);
+            this.props.updateInitialState(newDat);
           });
     }
   }
 
   addToState = (data, name, repo) =>{
-    //update state when function is called for first time
-    //this.props.updateTheState will be used, activated from Snippet
-    //console.log(data, name, repo);
+    this.props.updatePartofState(data, name, repo, 'repos');
+
+    if(name === 'total_languages'){
+      let keys = Object.keys(data[0]);
+
+      let stateCopy = this.state.languages;
+      keys.forEach( key =>{
+        stateCopy[key] = (stateCopy[key] +1) || 1;
+      })
+      this.setState({ languages : stateCopy });
+    }
   }
 
   createRepoNode = (item) =>{
@@ -42,9 +51,9 @@ class Main extends Component {
           <p>Size: {item['size']}</p>
           <p>Created: {item['created_at']}</p>
           <p>Last Commit: {item['updated_at']}</p>
-          <Snippet repo={item} addToState={this.addToState.bind(this)} name='total_languages' title='Languages' url={item['languages_url']}/>
-          <Snippet repo={item} addToState={this.addToState.bind(this)} name='total_commits' title='Commits' url={item['commits_url'].split('{')[0]}/>
-          <Snippet repo={item} addToState={this.addToState.bind(this)} name='total_contributors' title='Contributors' url={item['contributors_url']}/>
+          <Language repo={item} addToState={this.addToState.bind(this)} name='total_languages' title='Languages' url={item['languages_url']}/>
+          <Commit repo={item} addToState={this.addToState.bind(this)} name='total_commits' title='Commits' url={item['commits_url'].split('{')[0]}/>
+          <Contributor repo={item} addToState={this.addToState.bind(this)} name='total_contributors' title='Contributors' url={item['contributors_url']}/>
         </details>
       </li>
     );
@@ -66,12 +75,13 @@ class Main extends Component {
         <React.Fragment>
           <main id='main'>
           <header id='page-header'>
-            <h2>This is the {this.props.title} Page</h2>
+            {JSON.stringify(this.state.languages)}
+            <h2>Languages</h2>
+          </header>
+            <Page />
             <ul>
               {listItems}
             </ul>
-          </header>
-            <Page />
           </main>
         </React.Fragment>
       );
@@ -79,4 +89,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default PersonalRepo;
