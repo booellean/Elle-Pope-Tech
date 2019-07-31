@@ -4,45 +4,43 @@ import Contributor from './SnippetContribComponent';
 import Commit from './SnippetCommitComponent';
 import Page from './PageComponent';
 
-class ContribRepo extends Component {
+class Home extends Component {
   constructor(props){
     super(props);
 
     this.state = {
-      info : null,
+      info : this.props.data,
       languages : {}
     }
   }
 
   componentDidMount(){
     if(this.props.data !== null){
-      this.setState({ info: this.props.data['repos'] });
-      this.setState({ languages: this.props.data['languages-in-repos'] || {} });
+      this.setState({ info: this.props.data });
+      this.setState({ languages: this.props.data['total_languages'] || {} });
     }else{
       return this.props.fetchInitialData()
           .then( data =>{
             let newDat = JSON.parse(data);
-            this.setState({ info: newDat[this.props.name].repos });
+            this.setState({ info: newDat[this.props.name] });
             this.props.updateInitialState(newDat);
           });
     }
   }
 
-  addToState = (data, name, repo) =>{
-    if(name === 'total_languages'){
-      let keys = Object.keys(data[0]);
+  // addToState = (data, name, repo) =>{
+  //   this.props.updatePartofStateArray(data, name, repo, 'open-source');
 
-      let stateCopy = this.state.languages;
-      keys.forEach( key =>{
-        stateCopy[key] = (stateCopy[key] +1) || 1;
-      })
-        this.props.updatePartofState(stateCopy, 'languages-in-repos', repo, 'open-source');
-        this.props.updatePartofStateArray(data, name, repo, 'open-source');
-        return this.setState({ languages : stateCopy });
-    }
+  //   if(name === 'total_languages''){
+  //     let keys = Object.keys(data[0]);
 
-    return this.props.updatePartofStateArray(data, name, repo, 'open-source');
-  }
+  //     let stateCopy = this.state.languages;
+  //     keys.forEach( key =>{
+  //       stateCopy[key] = (stateCopy[key] +1) || 1;
+  //     })
+  //     this.setState({ languages : stateCopy });
+  //   }
+  // }
 
   createRepoNode = (item) =>{
     return(
@@ -69,12 +67,7 @@ class ContribRepo extends Component {
    }else{
     const listItems = this.state.info.map( item => {
         return(
-          <ul>
-            <h3>{item.org.name}</h3>
-            {item.repos.map( repo =>{
-              return this.createRepoNode(repo);
-            })}
-          </ul>
+          JSON.stringify(item)
         );
       });
 
@@ -83,7 +76,7 @@ class ContribRepo extends Component {
           <main id='main'>
           <header id='page-header'>
             {JSON.stringify(this.state.languages)}
-            <h2>Languages</h2>
+            <h2>This is the Home Component</h2>
           </header>
             <Page />
             <ul>
@@ -96,4 +89,4 @@ class ContribRepo extends Component {
   }
 }
 
-export default ContribRepo;
+export default Home;

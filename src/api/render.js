@@ -27,15 +27,15 @@ const renderFetch = {
         if(res.length === config.perPage){
           return renderFetch.renderAllRepos(req, url, page+1, fullArray);
         }else{
-            let personalRepos = fullArray.filter( item => {
+          let personalRepos = fullArray.filter( item => {
             return item.owner.login === config.user && item.fork === false && item.private !== true;
           });
-          let contribRepos = fullArray.filter( item =>{
-            return item.owner.login !== config.user || item.fork === true;
-          });
+          // let contribRepos = fullArray.filter( item =>{
+          //   return item.owner.login !== config.user || item.fork === true;
+          // });
 
           // let finalObj = { 'repos' : personalRepos, 'open-source': contribRepos};
-          let finalObj = {'repos' : personalRepos };
+          let finalObj = {'repos' : { 'repos' : personalRepos } };
           return preRender(finalObj);
         }
       })
@@ -192,7 +192,7 @@ const renderFetch = {
         return res.filter( item => item);
       })
       .then( res =>{
-        return preRender( { 'open-source' : res } );
+        return preRender( { 'open-source' : { 'repos' : res } } );
       })
       .catch( error =>{
         console.error( error );

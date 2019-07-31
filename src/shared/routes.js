@@ -1,5 +1,6 @@
 import PersonalRepo from './components/PersonalRepoComponent';
 import ContribRepo from './components/ContribRepoComponent';
+import Home from './components/HomeComponent';
 import * as api from '../client/api';
 import renderFetch from '../api/render';
 
@@ -48,7 +49,7 @@ const routes = [
   {
     path: '/',
     exact: true,
-    component: PersonalRepo,
+    component: Home,
     fetchInitialData: (path='', url=user_URL) =>{ return renderFetch.renderUserStats(
       path.split('/').pop(), url
     )},
