@@ -45,13 +45,20 @@ export default class App extends Component {
   }
 
   //update state from children that are rendered for the first time. Avoids unnecessary loading
-  updateInitialState(data){
-    let keysArr = Object.keys(data);
-    keysArr.forEach( key =>{
-      this.setState({
-        [key] : data[key]
-      })
+  updateInitialState(getDat){
+    return getDat()
+    .then( data =>{
+      return JSON.parse(data);
     })
+    .then( data =>{
+      let keysArr = Object.keys(data);
+      keysArr.forEach( key =>{
+        this.setState({
+          [key] : data[key]
+        })
+      })
+      return data;
+    });
   }
 
   updatePartofState(data, name, repo, stateName){
@@ -67,30 +74,64 @@ export default class App extends Component {
     return this.state[stateName][name] = data;
   }
 
-  updatePartofStateArray(data, name, repo, stateName){
-    //if new object state is part of an array....
-    if(Array.isArray(this.state[stateName].repos)){
-      //Find the index of the array object that needs updating
-      let arr = this.state[stateName].repos
+  updatePartofStateArray(getDat, url, name, repo, stateName){
+    //renderFetch.renderRepoUrlRequests(), this.props.url, this.props.name, this.props.repo
+    // return renderFetch.renderRepoUrlRequests(this.props.url, 1, this.props.name)
+    return getDat(url, 1, name)
+      .then( data =>{
+        let arr = this.state[stateName].repos;
+        if(!this.state[stateName]['languages-in-repos']){
+          this.state[stateName]['languages-in-repos'] = {}
+        }
+        let stateCopy = this.state[stateName]['languages-in-repos'];
 
-      //if this is for open-source state
-      if(arr[0].repos){
-        arr.forEach( org =>{
-          let index = org.repos.indexOf(repo);
-          if(index > -1){
-            return org.repos[index][name] = data;
+        if(Array.isArray(this.state[stateName].repos)){
+          //Find the index of the array object that needs updating
+
+          //if this is for open-source state
+          if(arr[0].repos){
+            arr.forEach( org =>{
+              let index = org.repos.indexOf(repo);
+              if(index > -1){
+                //Count languages if returning languages
+                if(name === 'total_languages'){
+                  let keys = Object.keys(data[0]);
+
+                  keys.forEach( key =>{
+                    stateCopy[key] = (stateCopy[key] +1) || 1;
+                  })
+                  if( (arr.indexOf(org) === arr.length - 1) && (org.repos.indexOf(repo) === org.repos.length - 1) ){
+                    //TODO: change this to a proper setState();
+                    this.state[stateName]['languages-in-repos'] = stateCopy;
+                  }
+                }
+                org.repos[index][name] = data;
+              }
+            })
+          }else{
+            let index = arr.indexOf(repo);
+
+            if(name === 'total_languages'){
+              let keys = Object.keys(data[0]);
+
+              keys.forEach( key =>{
+                stateCopy[key] = (stateCopy[key] +1) || 1;
+              })
+              if( index === (arr.length - 1) ){
+                //TODO: change this to a proper setState();
+                this.state[stateName]['languages-in-repos'] = stateCopy;
+              }
+            }
+            //using a combination of index, state name, and the new name we are adding to the state object, we set the state for future rendering.
+            arr[index][name] = data;
           }
-        })
-      }else{
-        let index = arr.indexOf(repo);
+        }else{
+          this.state[stateName][name] = data;
+        }
+        return({languages: stateCopy, data: data});
+      })
 
-        //using a combination of index, state name, and the new name we are adding to the state object, we set the state for future rendering.
-        return arr[index][name] = data;
-      }
-
-    }else{
-      return this.state[stateName][name] = data;
-    }
+    //if new object state is part of an array....
   }
 
   render(){

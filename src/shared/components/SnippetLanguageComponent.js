@@ -13,11 +13,10 @@ class Language extends Component {
     if(this.props.repo[this.props.name] !== undefined){
       this.setState({ 'repo-info' : this.props.repo[this.props.name] });
     }else{
-      return renderFetch.renderRepoUrlRequests(this.props.url, 1, this.props.name)
-          .then( data =>{
-            this.setState({ 'repo-info': data });
-            this.props.addToState(data, this.props.name, this.props.repo);
-          });
+      return this.props.addToState(renderFetch.renderRepoUrlRequests, this.props.url, this.props.name, this.props.repo)
+              .then( data =>{
+                return this.setState({ 'repo-info': data });
+              })
     }
   }
 

@@ -7,7 +7,6 @@ import Page from './PageComponent';
 class PersonalRepo extends Component {
   constructor(props){
     super(props);
-    console.log(props);
 
     this.state = {
       info : null,
@@ -20,31 +19,21 @@ class PersonalRepo extends Component {
       this.setState({ info: this.props.data['repos'] });
       this.setState({ languages: this.props.data['languages-in-repos'] || {} });
     }else{
-      return this.props.fetchInitialData()
-          .then( data =>{
-            let newDat = JSON.parse(data);
-            this.setState({ info: newDat[this.props.name].repos });
-            this.props.updateInitialState(newDat);
-          });
+      return this.props.updateInitialState(this.props.fetchInitialData)
+              .then( data =>{
+                this.setState({ info: data[this.props.name].repos });
+              });
     }
   }
 
-  addToState = (data, name, repo) =>{
-    if(name === 'total_languages'){
-      let keys = Object.keys(data[0]);
-
-      let stateCopy = this.state.languages;
-      keys.forEach( key =>{
-        stateCopy[key] = (stateCopy[key] +1) || 1;
-      })
-      if(this.state.info.indexOf(repo) === this.state.info.length - 1){
-        this.props.updatePartofState(stateCopy, 'languages-in-repos', repo, 'repos');
-        this.props.updatePartofStateArray(data, name, repo, 'repos');
-        return this.setState({ languages : stateCopy });
-      }
-    }
-
-    return this.props.updatePartofStateArray(data, name, repo, 'repos');
+  addToState = (getDat, url, name, repo) =>{
+    return this.props.updatePartofStateArray(getDat, url, name, repo, 'repos')
+      .then( data =>{
+        if(this.state.info.indexOf(repo) === (this.state.info.length - 1)){
+          this.setState({ languages : data.languages });
+        }
+        return data.data;
+      });
   }
 
   createRepoNode = (item) =>{
