@@ -1,5 +1,6 @@
 import PersonalRepo from './components/PersonalRepoComponent';
 import ContribRepo from './components/ContribRepoComponent';
+import Repo from './components/RepoComponent';
 import Home from './components/HomeComponent';
 import * as api from '../client/api';
 import renderFetch from '../api/render';
@@ -13,7 +14,7 @@ const routes = [
   {
     path: '/open-source/:orgId',
     exact: false,
-    component: PersonalRepo,
+    component: Repo,
     fetchInitialData: (path='', arr=config.openSource) =>{ return renderFetch.renderOrgInfo(
       path.split('/').pop(), arr
     )},
@@ -22,7 +23,7 @@ const routes = [
   {
     path: '/repos/:repoId',
     exact: false,
-    component: PersonalRepo,
+    component: Repo,
     fetchInitialData: (path='', url=repo_URL) =>{ return renderFetch.renderRepoInfo(
       path.split('/').pop(), url
     )},

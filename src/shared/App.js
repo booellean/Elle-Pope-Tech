@@ -6,7 +6,7 @@ import PersonalRepo from './components/PersonalRepoComponent';
 import ContribRepo from './components/ContribRepoComponent';
 import Home from './components/HomeComponent';
 import NotFound from './components/NotFoundComponent';
-import { Switch, Route, Redirect} from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import routes from './routes';
 import logo from './logo.svg';
 
@@ -19,7 +19,6 @@ export default class App extends Component {
     if(this.props.github){
       data = this.props.github;
       keysArr = Object.keys(data);
-      // console.log(data, keysArr);
     }else{
       data = JSON.parse(window.initialData);
       keysArr = Object.keys(data[0]);
@@ -36,6 +35,7 @@ export default class App extends Component {
     }
 
     keysArr.forEach( loc =>{
+      console.log(this.state[loc], data[loc]);
       if(this.state[loc] === null){
         return this.state[loc] = data[loc];
       }else{
@@ -51,6 +51,7 @@ export default class App extends Component {
       return JSON.parse(data);
     })
     .then( data =>{
+      console.log(data);
       let keysArr = Object.keys(data);
       keysArr.forEach( key =>{
         this.setState({
@@ -61,7 +62,7 @@ export default class App extends Component {
     });
   }
 
-  updatePartofState(data, name, repo, stateName){
+  updatePartofState(repo, stateName, state, getDat){
     //check if open-source
     // if(this.state[stateName][0].repos){
     //   this.state[stateName].repos.forEach( org =>{
@@ -71,12 +72,23 @@ export default class App extends Component {
     //     }
     //   })
     // }
-    return this.state[stateName][name] = data;
+    // Find repo in either open-source or repos depending on structure
+    console.log(this.state[stateName]);
+    let arr = this.state[stateName].repos;
+
+    //if it doesn't exist, get state with props function... propbably won't need it
+    if(!arr){
+      return this.updateInitialState(getDat)
+        .then( data =>{
+          return data[state];
+        })
+    }
+    let obj = arr.find( item => item.name === repo) || arr.find( item => item.org.login === repo);
+    this.setState({ [state] : obj });
+    return obj;
   }
 
   updatePartofStateArray(getDat, url, name, repo, stateName){
-    //renderFetch.renderRepoUrlRequests(), this.props.url, this.props.name, this.props.repo
-    // return renderFetch.renderRepoUrlRequests(this.props.url, 1, this.props.name)
     return getDat(url, 1, name)
       .then( data =>{
         let arr = this.state[stateName].repos;

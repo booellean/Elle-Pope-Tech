@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Language from './SnippetLanguageComponent';
 import Contributor from './SnippetContribComponent';
 import Commit from './SnippetCommitComponent';
@@ -39,7 +40,9 @@ class PersonalRepo extends Component {
   createRepoNode = (item) =>{
     return(
       <li key={item.id}>
-        <a href={item['html_ulr']} target="_blank"><h3>{item['name']}</h3></a>
+        <Link to={`/${this.props.name}/${item['name']}`}>
+          <h3>{item['name']}</h3>
+        </Link>
         <p>{item['description']}</p>
         <details>
           <p>Size: {item['size']}</p>

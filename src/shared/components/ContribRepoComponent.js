@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Language from './SnippetLanguageComponent';
 import Contributor from './SnippetContribComponent';
 import Commit from './SnippetCommitComponent';
@@ -39,7 +40,9 @@ class ContribRepo extends Component {
   createRepoNode = (item) =>{
     return(
       <li key={item.id}>
-        <a href={item['html_ulr']} target="_blank"><h3>{item['name']}</h3></a>
+        <Link to={`/${this.props.name}/${item['name']}`}>
+          <h3>{item['name']}</h3>
+        </Link>
         <p>{item['description']}</p>
         <details>
           <p>Size: {item['size']}</p>
@@ -62,7 +65,9 @@ class ContribRepo extends Component {
     const listItems = this.state.info.map( item => {
         return(
           <ul>
-            <h3>{item.org.name}</h3>
+        <Link to={`/${this.props.name}/${item.org.login}`}>
+          <h3>{item.org.name}</h3>
+        </Link>
             {item.repos.map( repo =>{
               return this.createRepoNode(repo);
             })}

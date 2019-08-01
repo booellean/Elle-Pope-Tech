@@ -210,10 +210,10 @@ const renderFetch = {
           return JSON.parse(res);
         })
         .then( res =>{
-          let currentRepo = res['repos'].filter( item =>{
+          let currentRepo = res['repos'].repos.filter( item =>{
             return item.name.toLowerCase() === reqId.toLowerCase();
           })
-          return preRender({ 'repos' : res, 'repo' : currentRepo[0] });
+          return preRender({ 'repos' : res['repos'], 'repo' : currentRepo[0] });
         })
     );
   },
@@ -226,10 +226,13 @@ const renderFetch = {
           return JSON.parse(res);
         })
         .then( res =>{
-          let currentOrg = res['open-source'].filter( item =>{
+          console.log(res);
+          let currentOrg = res['open-source'].repos.filter( item =>{
             return item.org.login.toLowerCase() === reqId.toLowerCase();
           })
-          return preRender({ 'open-source' : res, 'org' : currentOrg[0].repos});
+          let obj = { 'open-source': res['open-source'], 'org' : currentOrg[0] };
+          console.log(obj);
+          return preRender(obj);
         })
     );
   }
