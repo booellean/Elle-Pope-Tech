@@ -23,6 +23,22 @@ class ContribRepo extends Component {
       return this.props.updateInitialState(this.props.fetchInitialData)
               .then( data =>{
                 this.setState({ info: data[this.props.name].repos });
+                return data[this.props.name].repos;
+              })
+              .then( data =>{
+                data.forEach( item =>{
+                  let repo = item;
+                  return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['languages_url'], 'total_languages', repo, 'open-source')
+                    .then( res =>{
+                      return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['commits_url'].split('{')[0], 'total_commits', repo, 'open-source')
+                          .then( res =>{
+                            return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['contributors_url'], 'total_contributors', repo,'open-source')
+                              .then( res =>{
+                                return;
+                            })
+                          })
+                    })
+                })
               });
     }
   }

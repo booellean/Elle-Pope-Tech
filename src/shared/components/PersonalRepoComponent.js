@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import renderFetch from '../../api/render';
 import Language from './SnippetLanguageComponent';
 import Contributor from './SnippetContribComponent';
 import Commit from './SnippetCommitComponent';
@@ -23,6 +24,22 @@ class PersonalRepo extends Component {
       return this.props.updateInitialState(this.props.fetchInitialData)
               .then( data =>{
                 this.setState({ info: data[this.props.name].repos });
+                return data[this.props.name].repos;
+              })
+              .then( data =>{
+                data.forEach( item =>{
+                  let repo = item;
+                  return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['languages_url'], 'total_languages', repo, 'repos')
+                    .then( res =>{
+                      return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['commits_url'].split('{')[0], 'total_commits', repo, 'repos')
+                          .then( res =>{
+                            return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['contributors_url'], 'total_contributors', repo,'repos')
+                              .then( res =>{
+                                return;
+                            })
+                          })
+                    })
+                })
               });
     }
   }
@@ -48,9 +65,9 @@ class PersonalRepo extends Component {
           <p>Size: {item['size']}</p>
           <p>Created: {item['created_at']}</p>
           <p>Last Commit: {item['updated_at']}</p>
-          <Language repo={item} addToState={this.addToState.bind(this)} name='total_languages' title='Languages' url={item['languages_url']}/>
+          {/* <Language repo={item} addToState={this.addToState.bind(this)} name='total_languages' title='Languages' url={item['languages_url']}/>
           <Commit repo={item} addToState={this.addToState.bind(this)} name='total_commits' title='Commits' url={item['commits_url'].split('{')[0]}/>
-          <Contributor repo={item} addToState={this.addToState.bind(this)} name='total_contributors' title='Contributors' url={item['contributors_url']}/>
+          <Contributor repo={item} addToState={this.addToState.bind(this)} name='total_contributors' title='Contributors' url={item['contributors_url']}/> */}
         </details>
       </li>
     );
