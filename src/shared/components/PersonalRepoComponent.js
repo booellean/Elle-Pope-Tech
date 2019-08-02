@@ -21,25 +21,47 @@ class PersonalRepo extends Component {
       this.setState({ info: this.props.data['repos'] });
       this.setState({ languages: this.props.data['languages-in-repos'] || {} });
     }else{
+      let stateCopy;
       return this.props.updateInitialState(this.props.fetchInitialData)
               .then( data =>{
-                this.setState({ info: data[this.props.name].repos });
-                return data[this.props.name].repos;
+                // this.setState({ info: data[this.props.name].repos });
+                stateCopy = data[this.props.name].repos;
+                return data;
               })
               .then( data =>{
-                data.forEach( item =>{
-                  let repo = item;
+                let repos = data[this.props.name].repos;
+
+                let languageRequest = repos.map( repo =>{
                   return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['languages_url'], 'total_languages', repo, 'repos')
-                    .then( res =>{
-                      return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['commits_url'].split('{')[0], 'total_commits', repo, 'repos')
-                          .then( res =>{
-                            return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['contributors_url'], 'total_contributors', repo,'repos')
-                              .then( res =>{
-                                return;
-                            })
-                          })
+                    .then( data =>{
+                      repo['total_languages'] = data.data;
+                      stateCopy[stateCopy.indexOf(repo)] = repo;
+                      if(stateCopy.indexOf(repo) === (stateCopy.length - 1)){
+                        this.setState({ languages : data.languages });
+                      }
+                    });
+                })
+
+                let  commitRequest = repos.map( repo =>{
+                  return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['commits_url'].split('{')[0], 'total_commits', repo, 'repos')
+                    .then( data =>{
+                      repo['total_commits'] = data.data;
+                      stateCopy[stateCopy.indexOf(repo)] = repo;
+                    })
+                });
+
+                let contribRequest = repos.map( repo =>{
+                  return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['contributors_url'], 'total_contributors', repo,'repos')
+                    .then( data =>{
+                      repo['total_contributors'] = data.data;
+                      stateCopy[stateCopy.indexOf(repo)] = repo;
                     })
                 })
+
+                return Promise.all(languageRequest, commitRequest, contribRequest)
+                              .then( res =>{
+                                this.setState({ info: stateCopy });
+                              })
               });
     }
   }
@@ -65,9 +87,9 @@ class PersonalRepo extends Component {
           <p>Size: {item['size']}</p>
           <p>Created: {item['created_at']}</p>
           <p>Last Commit: {item['updated_at']}</p>
-          {/* <Language repo={item} addToState={this.addToState.bind(this)} name='total_languages' title='Languages' url={item['languages_url']}/>
+          <Language repo={item} addToState={this.addToState.bind(this)} name='total_languages' title='Languages' url={item['languages_url']}/>
           <Commit repo={item} addToState={this.addToState.bind(this)} name='total_commits' title='Commits' url={item['commits_url'].split('{')[0]}/>
-          <Contributor repo={item} addToState={this.addToState.bind(this)} name='total_contributors' title='Contributors' url={item['contributors_url']}/> */}
+          <Contributor repo={item} addToState={this.addToState.bind(this)} name='total_contributors' title='Contributors' url={item['contributors_url']}/>
         </details>
       </li>
     );

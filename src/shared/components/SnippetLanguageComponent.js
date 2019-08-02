@@ -13,6 +13,7 @@ class Language extends Component {
     if(this.props.repo[this.props.name] !== undefined){
       this.setState({ 'repo-info' : this.props.repo[this.props.name] });
     }else{
+      console.log('Snippet was called');
       return this.props.addToState(renderFetch.renderRepoUrlRequests, this.props.url, this.props.name, this.props.repo)
               .then( data =>{
                 return this.setState({ 'repo-info': data });
