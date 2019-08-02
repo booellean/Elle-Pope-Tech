@@ -73,6 +73,8 @@ class PersonalRepo extends Component {
     }
   }
 
+  //Functions that manipulate data/behavior
+
   addToState = (getDat, url, name, repo) =>{
     return this.props.updatePartofStateArray(getDat, url, name, repo, 'repos')
       .then( data =>{
@@ -82,6 +84,25 @@ class PersonalRepo extends Component {
         return data.data;
       });
   }
+
+  sortLanguage = (e, lang) =>{
+    e.preventDefault();
+    let filteredLangs =  this.state.info.filter( repo =>{
+      // let orgRepos =  org.repos.filter( repo => {
+        return repo['total_languages'][0].hasOwnProperty(lang);
+      // })
+      if(orgRepos.length > 0){
+        return { org : org.org, repos : orgRepos};
+      }
+      return null;
+    });
+
+    filteredLangs = filteredLangs.filter( arr => arr );
+
+    this.setState({ copy : filteredLangs })
+  }
+
+  //Functions that create nodes
 
   createRepoNode = (item) =>{
     return(
@@ -102,6 +123,17 @@ class PersonalRepo extends Component {
     );
   }
 
+  createLanguagesList = (langs) =>{
+    let keys = Object.keys(langs);
+
+    if(keys.length === 0){
+      return <li>Loading...</li>;
+    }
+     return keys.map( key =>{
+      return <li key={key} onClick={(e) => this.sortLanguage(e, key)}>{key} ({langs[key]})</li>
+    })
+  }
+
   render(){
 
    if(!this.state.copy){
@@ -118,8 +150,8 @@ class PersonalRepo extends Component {
         <React.Fragment>
           <main id='main'>
           <header id='page-header'>
-            {JSON.stringify(this.state.languages)}
             <h2>Languages</h2>
+            {this.createLanguagesList(this.state.languages)}
           </header>
             <Page />
             <ul>
