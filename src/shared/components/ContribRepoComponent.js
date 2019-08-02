@@ -12,6 +12,7 @@ class ContribRepo extends Component {
 
     this.state = {
       info : null,
+      copy : null,
       languages : {}
     }
   }
@@ -19,6 +20,7 @@ class ContribRepo extends Component {
   componentDidMount(){
     if(this.props.data !== null){
       this.setState({ info: this.props.data['repos'] });
+      this.setState({ copy: this.props.data['repos'] });
       this.setState({ languages: this.props.data['languages-in-repos'] || {} });
     }else{
       let stateCopy;
@@ -31,7 +33,7 @@ class ContribRepo extends Component {
                 let repos = data[this.props.name].repos;
 
                 let languageRequest = repos.map( r =>{
-                  r.repos.map( repo =>{
+                  return Promise.all(r.repos.map( repo =>{
                     return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['languages_url'], 'total_languages', repo, 'open-source')
                     .then( data =>{
                       repo['total_languages'] = data.data;
@@ -43,46 +45,70 @@ class ContribRepo extends Component {
                         this.setState({ languages : data.languages });
                       }
                     });
-                  })
+                  }))
                 })
 
                 let  commitRequest = repos.map( r =>{
-                  r.repos.map( repo =>{
+                  return Promise.all(r.repos.map( repo =>{
                     return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['commits_url'].split('{')[0], 'total_commits', repo, 'open-source')
                       .then( data =>{
                         repo['total_commits'] = data.data;
                         stateCopy[stateCopy.indexOf(repo)] = repo;
                       })
-                    })
+                    }))
                 });
 
                 let contribRequest = repos.map( r =>{
-                  r.repos.map( repo =>{
+                  return Promise.all(r.repos.map( repo =>{
                   return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['contributors_url'], 'total_contributors', repo,'open-source')
                     .then( data =>{
                       repo['total_contributors'] = data.data;
                       stateCopy[stateCopy.indexOf(repo)] = repo;
                     })
-                  })
+                  }))
                 })
 
                 return Promise.all(languageRequest, commitRequest, contribRequest)
                               .then( res =>{
+                                return res
+                              })
+                              .then( res =>{
+                                console.log(res);
                                 this.setState({ info: stateCopy });
+                                this.setState({ copy: stateCopy });
                               })
               });
     }
   }
 
+  //Functions that manipulate data/behavior
+
   addToState = (getDat, url, name, repo) =>{
     return this.props.updatePartofStateArray(getDat, url, name, repo, 'open-source')
       .then( data =>{
-        if(this.state.info.indexOf(repo) === (this.state.info.length - 1)){
-          this.setState({ languages : data.languages });
-        }
+        this.setState({ languages : data.languages });
         return data.data;
       });
   }
+
+  sortLanguage = (e, lang) =>{
+    e.preventDefault();
+    let filteredLangs =  this.state.info.map( org =>{
+      let orgRepos =  org.repos.filter( repo => {
+        return repo['total_languages'][0].hasOwnProperty(lang);
+      })
+      if(orgRepos.length > 0){
+        return { org : org.org, repos : orgRepos};
+      }
+      return null;
+    });
+
+    filteredLangs = filteredLangs.filter( arr => arr );
+
+    this.setState({ copy : filteredLangs })
+  }
+
+  //Functions that create nodes
 
   createRepoNode = (item) =>{
     return(
@@ -103,13 +129,24 @@ class ContribRepo extends Component {
     );
   }
 
+  createLanguagesList = (langs) =>{
+    let keys = Object.keys(langs);
+
+    if(keys.length === 0){
+      return <li>Loading...</li>;
+    }
+     return keys.map( key =>{
+      return <li key={key} onClick={(e) => this.sortLanguage(e, key)}>{key} ({langs[key]})</li>
+    })
+  }
+
   render(){
 
-   if(!this.state.info){
+   if(!this.state.copy){
      //Put Loading bar here;
      return false;
    }else{
-    const listItems = this.state.info.map( item => {
+    const listItems = this.state.copy.map( item => {
         return(
           <ul>
         <Link to={`/${this.props.name}/${item.org.login}`}>
@@ -126,8 +163,10 @@ class ContribRepo extends Component {
         <React.Fragment>
           <main id='main'>
           <header id='page-header'>
-            {JSON.stringify(this.state.languages)}
-            <h2>Languages</h2>
+          <h2>Languages</h2>
+          <ul>
+            {this.createLanguagesList(this.state.languages)}
+          </ul>
           </header>
             <Page />
             <ul>

@@ -12,6 +12,7 @@ class PersonalRepo extends Component {
 
     this.state = {
       info : null,
+      copy : null,
       languages : {}
     }
   }
@@ -19,12 +20,12 @@ class PersonalRepo extends Component {
   componentDidMount(){
     if(this.props.data !== null){
       this.setState({ info: this.props.data['repos'] });
+      this.setState({ copy: this.props.data['repos'] });
       this.setState({ languages: this.props.data['languages-in-repos'] || {} });
     }else{
       let stateCopy;
       return this.props.updateInitialState(this.props.fetchInitialData)
               .then( data =>{
-                // this.setState({ info: data[this.props.name].repos });
                 stateCopy = data[this.props.name].repos;
                 return data;
               })
@@ -36,6 +37,7 @@ class PersonalRepo extends Component {
                     .then( data =>{
                       repo['total_languages'] = data.data;
                       stateCopy[stateCopy.indexOf(repo)] = repo;
+                      console.log('languages!');
                       if(stateCopy.indexOf(repo) === (stateCopy.length - 1)){
                         this.setState({ languages : data.languages });
                       }
@@ -60,7 +62,12 @@ class PersonalRepo extends Component {
 
                 return Promise.all(languageRequest, commitRequest, contribRequest)
                               .then( res =>{
+                                return res
+                              })
+                              .then( res =>{
+                                console.log(res);
                                 this.setState({ info: stateCopy });
+                                this.setState({ copy: stateCopy });
                               })
               });
     }
@@ -97,11 +104,11 @@ class PersonalRepo extends Component {
 
   render(){
 
-   if(!this.state.info){
+   if(!this.state.copy){
      //Put Loading bar here;
      return false;
    }else{
-    const listItems = this.state.info.map( item => {
+    const listItems = this.state.copy.map( item => {
         return(
           this.createRepoNode(item)
         );
