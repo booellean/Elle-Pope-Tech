@@ -13,6 +13,12 @@ class PersonalRepo extends Component {
     this.state = {
       info : null,
       copy : null,
+      ascending : {
+        create : true,
+        commit : true,
+        alpha : true,
+      },
+      currentLang : 'reset',
       languages : {}
     }
   }
@@ -87,6 +93,9 @@ class PersonalRepo extends Component {
 
   sortLanguage = (e, lang) =>{
     e.preventDefault();
+    if(lang === 'reset'){
+      return this.setState({ copy : this.state.info })
+    }
     let filteredLangs =  this.state.info.filter( repo =>{
       // let orgRepos =  org.repos.filter( repo => {
         return repo['total_languages'][0].hasOwnProperty(lang);
@@ -100,6 +109,58 @@ class PersonalRepo extends Component {
     filteredLangs = filteredLangs.filter( arr => arr );
 
     this.setState({ copy : filteredLangs })
+  }
+
+  sortLanguage = (e, lang) =>{
+    e.preventDefault();
+    if(lang === 'reset'){
+      return this.setState({ copy : this.state.info })
+    }
+    let filteredLangs =  this.state.info.map( org =>{
+      let orgRepos =  org.repos.filter( repo => {
+        return repo['total_languages'][0].hasOwnProperty(lang);
+      })
+      if(orgRepos.length > 0){
+        return { org : org.org, repos : orgRepos};
+      }
+      return null;
+    });
+
+    filteredLangs = filteredLangs.filter( arr => arr );
+
+    console.log(filteredLangs);
+
+    this.setState({ copy : filteredLangs });
+    this.setState({ currentLang : lang });
+  }
+
+  sortByDate = (e, type, state) =>{
+    e.preventDefault();
+
+    this.state.info.sort( (a, b) =>{
+        if(this.state.ascending[state] === true){
+          return new Date(a[type]) < new Date(b[type]) ? 1 : -1;
+          }
+          return new Date(a[type]) > new Date(b[type]) ? 1 : -1;
+    });
+
+    this.sortLanguage(e, this.state.currentLang);
+    return this.state.ascending[state] = !this.state.ascending[state];
+  }
+
+  sortByName = (e, state) =>{
+    e.preventDefault();
+
+    //Sort by repo name
+    this.state.info.sort( (a, b) =>{
+      if(this.state.ascending[state] === true){
+        return a.name < b.name ? 1 : -1;
+        }
+        return a.name > b.name ? 1 : -1;
+    });
+
+    this.sortLanguage(e, this.state.currentLang);
+    return this.state.ascending[state] = !this.state.ascending[state];
   }
 
   //Functions that create nodes
@@ -150,7 +211,11 @@ class PersonalRepo extends Component {
         <React.Fragment>
           <main id='main'>
           <header id='page-header'>
-            <h2>Languages</h2>
+            <h2 onClick={(e) => this.sortLanguage(e, 'reset')} >Languages</h2>
+            <p onClick={(e) => this.sortByDate(e, 'created_at', 'create')}>Created Date</p>
+            <p onClick={(e) => this.sortByDate(e, 'updated_at', 'commit')}>Commit Date</p>
+            <br/>
+            <p onClick={(e) => this.sortByName(e, 'alpha')}>Sort by Repo Name</p>
             {this.createLanguagesList(this.state.languages)}
           </header>
             <Page />

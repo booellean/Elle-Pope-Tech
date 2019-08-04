@@ -5,6 +5,7 @@ import Language from './SnippetLanguageComponent';
 import Contributor from './SnippetContribComponent';
 import Commit from './SnippetCommitComponent';
 import Page from './PageComponent';
+import { isRegExp } from 'util';
 
 class ContribRepo extends Component {
   constructor(props){
@@ -13,6 +14,13 @@ class ContribRepo extends Component {
     this.state = {
       info : null,
       copy : null,
+      ascending : {
+        create : true,
+        commit : true,
+        orgAlpha : true,
+        repoAlpha : true,
+      },
+      currentLang : 'reset',
       languages : {}
     }
   }
@@ -93,6 +101,9 @@ class ContribRepo extends Component {
 
   sortLanguage = (e, lang) =>{
     e.preventDefault();
+    if(lang === 'reset'){
+      return this.setState({ copy : this.state.info })
+    }
     let filteredLangs =  this.state.info.map( org =>{
       let orgRepos =  org.repos.filter( repo => {
         return repo['total_languages'][0].hasOwnProperty(lang);
@@ -105,12 +116,90 @@ class ContribRepo extends Component {
 
     filteredLangs = filteredLangs.filter( arr => arr );
 
-    this.setState({ copy : filteredLangs })
+    console.log(filteredLangs);
+
+    this.setState({ copy : filteredLangs });
+    this.setState({ currentLang : lang });
+  }
+
+  sortByDate = (e, type, state) =>{
+    e.preventDefault();
+
+    this.state.info.sort( (orgA, orgB) =>{
+      orgA.repos.sort( (a, b) =>{
+        if(this.state.ascending[state] === true){
+          return new Date(a[type]) < new Date(b[type]) ? 1 : -1;
+          }
+          return new Date(a[type]) > new Date(b[type]) ? 1 : -1;
+        })
+        orgB.repos.sort( (a, b) =>{
+          if(this.state.ascending[state] === true){
+            return new Date(a[type]) < new Date(b[type]) ? 1 : -1;
+            }
+            return new Date(a[type]) > new Date(b[type]) ? 1 : -1;
+          })
+
+        //If array is empty, set the type for sorting porposes
+        if(orgA.repos.length === 0){
+          orgA.repos[0] = { [type] : '1900-01-01T01:00:00Z' };
+        }
+        if(orgB.repos.length === 0){
+          orgB.repos[0] = { [type] : '1900-01-01T01:00:00Z' };
+        }
+
+        if(this.state.ascending[state] === true){
+          return orgA.repos[0][type] < orgB.repos[0][type] ? 1 : -1;
+        }
+        return orgA.repos[0][type] > orgB.repos[0][type] ? 1 : -1;
+    });
+
+    //Reset empty arrays to avoid React rendering problems in code
+    this.state.info.forEach( org =>{
+      if(org.repos[0][type] === '1900-01-01T01:00:00Z'){
+        org.repos = [];
+      }
+    })
+
+    console.log(this.state.ascending[state]);
+    this.sortLanguage(e, this.state.currentLang);
+
+    return this.state.ascending[state] = !this.state.ascending[state];
+  }
+
+  sortByName = (e, type, state) =>{
+    e.preventDefault();
+
+    //Sort by Org Name and/or by repo name
+    switch(type){
+      case 'org':
+        this.state.info.sort( (orgA, orgB) =>{
+          if(this.state.ascending[state] === true){
+            return orgA.org.name < orgB.org.name ? 1 : -1;
+          }
+          return orgA.org.name > orgB.org.name ? 1 : -1;
+        })
+        break;
+      case 'repo':
+          this.state.info.forEach( (org) =>{
+            org.repos.sort( (a, b) =>{
+              if(this.state.ascending[state] === true){
+                return a.name < b.name ? 1 : -1;
+                }
+                return a.name > b.name ? 1 : -1;
+              })
+          });
+        break;
+      default:
+        console.log('okay, whatever, I will figure it out later');
+    }
+    this.sortLanguage(e, this.state.currentLang);
+    return this.state.ascending[state] = !this.state.ascending[state];
   }
 
   //Functions that create nodes
 
   createRepoNode = (item) =>{
+    //console.log(this.state.copy);
     return(
       <li key={item.id}>
         <Link to={`/${this.props.name}/${item['name']}`}>
@@ -163,7 +252,12 @@ class ContribRepo extends Component {
         <React.Fragment>
           <main id='main'>
           <header id='page-header'>
-          <h2>Languages</h2>
+          <h2 onClick={(e) => this.sortLanguage(e, 'reset')} >Languages</h2>
+          <p onClick={(e) => this.sortByDate(e, 'created_at', 'create')}>Created Date</p>
+          <p onClick={(e) => this.sortByDate(e, 'updated_at', 'commit')}>Commit Date</p>
+          <br/>
+          <p onClick={(e) => this.sortByName(e, 'org', 'orgAlpha')} >Sort by Org Name</p>
+          <p onClick={(e) => this.sortByName(e, 'repo', 'repoAlpha')}>Sort by Repo Name</p>
           <ul>
             {this.createLanguagesList(this.state.languages)}
           </ul>
