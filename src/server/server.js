@@ -1,17 +1,21 @@
 import express from 'express';
 import React from 'react';
+import bodyParser from 'body-parser'
 import { renderToString } from 'react-dom/server';
 import { StaticRouter, matchPath } from 'react-router-dom';
 import { matchRoutes } from 'react-router-config';
 import routes from '../shared/routes';
+
 // import renderFetch from '../api/render';
-import config from '../api/config';
+import sendMail from './mailer';
+import config from './../api/config';
 import apiRouter from '../api/index';
 
 import App from '../shared/App';
 
 const app = express();
 
+app.use(bodyParser.urlencoded());
 app.use('/api', apiRouter);
 app.use(express.static('public'));
 
@@ -57,6 +61,22 @@ app.get('*', (req, res, next) =>{
     console.error(error);
     res.status(404).send('Bad Request');
   });
+})
+
+app.post('*', async (req, res) => {
+  console.log(req.url);
+  try {
+    const { name, email, message } = req.body
+    const final = {
+      from: `${name} <${email}>`,
+      text: message
+    }
+    await sendEmail(final);
+
+    res.redirect(`${req.url}#contact-success`);
+  } catch (error) {
+    res.redirect(`${req.url}#contact-error`);
+  }
 })
 
 app.listen(config.port, config.host, () => {

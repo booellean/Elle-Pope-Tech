@@ -35,7 +35,6 @@ export default class App extends Component {
     }
 
     keysArr.forEach( loc =>{
-      console.log(this.state[loc], data[loc]);
       if(this.state[loc] === null){
         return this.state[loc] = data[loc];
       }else{
@@ -51,7 +50,6 @@ export default class App extends Component {
       return JSON.parse(data);
     })
     .then( data =>{
-      console.log(data);
       let keysArr = Object.keys(data);
       keysArr.forEach( key =>{
         this.setState({
@@ -63,17 +61,6 @@ export default class App extends Component {
   }
 
   updatePartofState(repo, stateName, state, getDat){
-    //check if open-source
-    // if(this.state[stateName][0].repos){
-    //   this.state[stateName].repos.forEach( org =>{
-    //     let index = org.repos.indexOf(repo);
-    //     if(index > -1){
-    //       return org.repos[index][name] = data;
-    //     }
-    //   })
-    // }
-    // Find repo in either open-source or repos depending on structure
-    console.log(this.state[stateName]);
     let arr = this.state[stateName].repos;
 
     //if it doesn't exist, get state with props function... propbably won't need it
