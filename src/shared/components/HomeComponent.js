@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Language from './SnippetLanguageComponent';
 import Contributor from './SnippetContribComponent';
 import Commit from './SnippetCommitComponent';
-import Page from './PageComponent';
+import temp from '../temp.gif';
 
 class Home extends Component {
   constructor(props){
@@ -10,37 +10,23 @@ class Home extends Component {
 
     this.state = {
       info : this.props.data,
-      languages : {}
+      bio : 'Eventually, a bio will go here'
     }
   }
 
   componentDidMount(){
     if(this.props.data !== null){
-      this.setState({ info: this.props.data });
-      this.setState({ languages: this.props.data['total_languages'] || {} });
+      console.log(this.props.data);
+      this.setState({ info: this.props.data[0] });
     }else{
       return this.props.fetchInitialData()
           .then( data =>{
             let newDat = JSON.parse(data);
-            this.setState({ info: newDat[this.props.name] });
+            this.setState({ info: newDat[this.props.name][0] });
             this.props.updateInitialState(newDat);
           });
     }
   }
-
-  // addToState = (data, name, repo) =>{
-  //   this.props.updatePartofStateArray(data, name, repo, 'open-source');
-
-  //   if(name === 'total_languages''){
-  //     let keys = Object.keys(data[0]);
-
-  //     let stateCopy = this.state.languages;
-  //     keys.forEach( key =>{
-  //       stateCopy[key] = (stateCopy[key] +1) || 1;
-  //     })
-  //     this.setState({ languages : stateCopy });
-  //   }
-  // }
 
   createRepoNode = (item) =>{
     return(
@@ -62,27 +48,25 @@ class Home extends Component {
   render(){
 
    if(!this.state.info){
-     //Put Loading bar here;
-     return false;
+     return(
+      <React.Fragment>
+        <header id='page-header'>
+        </header>
+        <img src={temp} alt="loading cat is loading the page now!"></img>
+      </React.Fragment>
+     );
    }else{
-    const listItems = this.state.info.map( item => {
-        return(
-          JSON.stringify(item)
-        );
-      });
-
       return(
         <React.Fragment>
-          <main id='main'>
           <header id='page-header'>
-            {JSON.stringify(this.state.languages)}
-            <h2>This is the Home Component</h2>
+            <img src={this.state.info.avatar_url} alt="I professional picture of Elle Pope a.k.a. booellean"/>
+            <h2><a href={this.state.info.html_url} target="_blank">{this.state.info.login}</a></h2>
+            <p>{this.state.info.bio}</p>
+            <p>Repos : {this.state.info.public_repos + this.state.info.total_private_repos}</p>
           </header>
-            <Page />
-            <ul>
-              {listItems}
-            </ul>
-          </main>
+          <article id="content">
+            {this.state.bio}
+          </article>
         </React.Fragment>
       );
     }

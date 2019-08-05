@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import logo from '../logo.svg';
 
 export default class Header extends Component {
   constructor(props){
@@ -13,7 +14,8 @@ export default class Header extends Component {
     return(
       <React.Fragment>
         <header id='header'>
-          <h1>This is the Header for Elle Tech</h1>
+          <img src={logo} alt="Initials of Elle Pope transposed into a butterfly" id="logo"></img>
+          <h1>Elle Pope</h1>
           <nav>
             <ul>
               <li>

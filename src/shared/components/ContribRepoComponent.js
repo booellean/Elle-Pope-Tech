@@ -4,8 +4,6 @@ import renderFetch from '../../api/render';
 import Language from './SnippetLanguageComponent';
 import Contributor from './SnippetContribComponent';
 import Commit from './SnippetCommitComponent';
-import Page from './PageComponent';
-import { isRegExp } from 'util';
 
 class ContribRepo extends Component {
   constructor(props){
@@ -201,7 +199,7 @@ class ContribRepo extends Component {
   createRepoNode = (item) =>{
     //console.log(this.state.copy);
     return(
-      <li key={item.id}>
+      <li className="repo-info" key={item.id}>
         <Link to={`/${this.props.name}/${item['name']}`}>
           <h3>{item['name']}</h3>
         </Link>
@@ -229,6 +227,13 @@ class ContribRepo extends Component {
     })
   }
 
+  createSortIcon = (name) =>{
+    if(!this.state.ascending[name]){
+      return <i class="fas fa-sort-up"></i>;
+    }
+    return <i class="fas fa-sort-down"></i>;
+  }
+
   render(){
 
    if(!this.state.copy){
@@ -237,36 +242,40 @@ class ContribRepo extends Component {
    }else{
     const listItems = this.state.copy.map( item => {
         return(
-          <ul>
-        <Link to={`/${this.props.name}/${item.org.login}`}>
-          <h3>{item.org.name}</h3>
-        </Link>
+          <li className="org-info" key={item.org.login}>
+
+            <Link to={`/${this.props.name}/${item.org.login}`}>
+              <h3>{item.org.name}</h3>
+            </Link>
             {item.repos.map( repo =>{
               return this.createRepoNode(repo);
             })}
-          </ul>
+          </li>
         );
       });
 
       return(
         <React.Fragment>
-          <main id='main'>
           <header id='page-header'>
           <h2 onClick={(e) => this.sortLanguage(e, 'reset')} >Languages</h2>
-          <p onClick={(e) => this.sortByDate(e, 'created_at', 'create')}>Created Date</p>
-          <p onClick={(e) => this.sortByDate(e, 'updated_at', 'commit')}>Commit Date</p>
+          <p onClick={(e) => this.sortByDate(e, 'created_at', 'create')}>
+            Created On {this.createSortIcon('create')}
+          </p>
+          <p onClick={(e) => this.sortByDate(e, 'updated_at', 'commit')}>
+            Commit Date {this.createSortIcon('commit')}
+            </p>
           <br/>
-          <p onClick={(e) => this.sortByName(e, 'org', 'orgAlpha')} >Sort by Org Name</p>
-          <p onClick={(e) => this.sortByName(e, 'repo', 'repoAlpha')}>Sort by Repo Name</p>
+          <p onClick={(e) => this.sortByName(e, 'org', 'orgAlpha')} >
+            Sort by Org Name {this.createSortIcon('orgAlpha')} </p>
+          <p onClick={(e) => this.sortByName(e, 'repo', 'repoAlpha')}>
+            Sort by Repo Name {this.createSortIcon('repoAlpha')}</p>
           <ul>
             {this.createLanguagesList(this.state.languages)}
           </ul>
           </header>
-            <Page />
             <ul>
               {listItems}
             </ul>
-          </main>
         </React.Fragment>
       );
     }

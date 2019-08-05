@@ -8,7 +8,6 @@ import Home from './components/HomeComponent';
 import NotFound from './components/NotFoundComponent';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import routes from './routes';
-import logo from './logo.svg';
 
 export default class App extends Component {
   constructor(props){
@@ -138,6 +137,7 @@ export default class App extends Component {
     return (
       <div className='App'>
         <Header />
+        <main id='main'>
         <Switch>
           {routes.map( ({ path, exact, component: C, ...rest, name} ) => (
             <Route
@@ -158,6 +158,7 @@ export default class App extends Component {
             ))}
             <Redirect to='/404' component={NotFound} />
           </Switch>
+          </main>
         <Footer />
       </div>
     );

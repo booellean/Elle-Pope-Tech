@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import Language from './SnippetLanguageComponent';
 import Contributor from './SnippetContribComponent';
 import Commit from './SnippetCommitComponent';
-import Page from './PageComponent';
 
 class Repo extends Component {
   constructor(props){
@@ -52,15 +51,12 @@ class Repo extends Component {
 
       return(
         <React.Fragment>
-          <main id='main'>
           <header id='page-header'>
             <h2>Languages</h2>
           </header>
-            <Page />
             <ul>
               {/* {listItems} */}
             </ul>
-          </main>
         </React.Fragment>
       );
     }

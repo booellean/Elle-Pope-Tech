@@ -1,5 +1,126 @@
+* {
+  margin: 0;
+  padding: 0;
+  word-wrap: break-word;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+}
+
+img {
+  width: 100%;
+}
+
 .App {
-  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-between;
+}
+
+#header, #footer, #main {
+  width: 100%;
+}
+#header, #footer {
+  padding: 1rem;
+  flex-shrink: 0;
+}
+
+#main{
+  flex-grow: 1;
+  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+/* styles for header */
+#header{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  background: #0dc5c1;
+  /* background: #04bfb6; */
+  /* background: #00B2CA; */
+}
+
+h1{
+  flex-grow: 1;
+}
+
+#logo{
+  width: 5rem;
+}
+
+/* styles for footer */
+#footer{
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+}
+
+/* styles for contact form */
+#contact{
+  display: flex;
+  order: 1;
+}
+#contact>div[role=group]{
+  width: 30rem;
+  display: flex;
+  flex-flow: row wrap;
+}
+#contact>div[role=group]>*{
+  flex-shrink: 1;
+}
+
+#contact>div[role=group]>legend{
+  width: 100%;
+}
+
+#contact>div[role=group]>label {
+  width: 30%;
+}
+
+#contact>div[role=group]>input {
+  width: 70%;
+}
+
+#contact>div[role=group]>input[type=submit]{
+  width: 7rem;
+}
+
+#contact>div[role=group]>textarea{
+  width: 100%;
+  resize: vertical;
+  min-height: 20rem;
+}
+
+#copyright{
+  width: 100%;
+  order: 3;
+}
+
+#social-links {
+  order: 2;
+}
+
+nav>ul>li{
+  list-style: none;
+}
+
+/* Page stylings */
+
+#page-header{
+  position: sticky;
+  top: 0;
+  background: #00B2CA;
+  height: 100vh;
+  width: 30%;
+}
+
+#content{
+  width: 70%;
 }
 
 .App-logo {

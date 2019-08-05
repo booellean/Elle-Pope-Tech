@@ -4,7 +4,6 @@ import renderFetch from '../../api/render';
 import Language from './SnippetLanguageComponent';
 import Contributor from './SnippetContribComponent';
 import Commit from './SnippetCommitComponent';
-import Page from './PageComponent';
 
 class PersonalRepo extends Component {
   constructor(props){
@@ -97,38 +96,10 @@ class PersonalRepo extends Component {
       return this.setState({ copy : this.state.info })
     }
     let filteredLangs =  this.state.info.filter( repo =>{
-      // let orgRepos =  org.repos.filter( repo => {
         return repo['total_languages'][0].hasOwnProperty(lang);
-      // })
-      if(orgRepos.length > 0){
-        return { org : org.org, repos : orgRepos};
-      }
-      return null;
     });
 
     filteredLangs = filteredLangs.filter( arr => arr );
-
-    this.setState({ copy : filteredLangs })
-  }
-
-  sortLanguage = (e, lang) =>{
-    e.preventDefault();
-    if(lang === 'reset'){
-      return this.setState({ copy : this.state.info })
-    }
-    let filteredLangs =  this.state.info.map( org =>{
-      let orgRepos =  org.repos.filter( repo => {
-        return repo['total_languages'][0].hasOwnProperty(lang);
-      })
-      if(orgRepos.length > 0){
-        return { org : org.org, repos : orgRepos};
-      }
-      return null;
-    });
-
-    filteredLangs = filteredLangs.filter( arr => arr );
-
-    console.log(filteredLangs);
 
     this.setState({ copy : filteredLangs });
     this.setState({ currentLang : lang });
@@ -167,7 +138,7 @@ class PersonalRepo extends Component {
 
   createRepoNode = (item) =>{
     return(
-      <li key={item.id}>
+      <li className="repo-info" key={item.id}>
         <Link to={`/${this.props.name}/${item['name']}`}>
           <h3>{item['name']}</h3>
         </Link>
@@ -209,7 +180,6 @@ class PersonalRepo extends Component {
 
       return(
         <React.Fragment>
-          <main id='main'>
           <header id='page-header'>
             <h2 onClick={(e) => this.sortLanguage(e, 'reset')} >Languages</h2>
             <p onClick={(e) => this.sortByDate(e, 'created_at', 'create')}>Created Date</p>
@@ -218,11 +188,9 @@ class PersonalRepo extends Component {
             <p onClick={(e) => this.sortByName(e, 'alpha')}>Sort by Repo Name</p>
             {this.createLanguagesList(this.state.languages)}
           </header>
-            <Page />
             <ul>
               {listItems}
             </ul>
-          </main>
         </React.Fragment>
       );
     }

@@ -12,35 +12,38 @@ export default class Footer extends Component {
     return(
       <React.Fragment>
         <footer id='footer'>
-          <small>copyright information here</small>
           <nav id='social-links'>
             <ul>
               <li>
-                <a className='social-link' href='#github'> Github</a>
+                <a className='social-link' href='https://github.com/booellean' target="_blank"><i class="fab fa-github"></i></a>
               </li>
               <li>
-                <a className='social-link' href='#twitter'> LinkedIn</a>
+                <a className='social-link' href='https://www.linkedin.com/in/elle-pope-dev/' target="_blank"><i class="fab fa-linkedin"></i></a>
               </li>
               <li>
-                <a className='social-link' href='#twitter'> Twitter</a>
+                <a className='social-link' href='https://twitter.com/booellean' target="_blank"><i class="fab fa-twitter"></i></a>
               </li>
               <li>
-                <a className='social-link' href='#twitter'> Itch.io</a>
+                <a className='social-link' href='https://itch.io/profile/booellean' target="_blank"><i class="fab fa-itch-io"></i></a>
               </li>
             </ul>
           </nav>
-          <form method="POST">
-            <label htmlFor="name">Name</label>
-            <input type="text" name="name" />
+          <form id="contact" method="POST">
+            <div role="group" aria-labelledby="legend">
+              <legend id="legend">Contact</legend>
+              <label htmlFor="name">Name</label>
+              <input type="text" name="name" />
 
-            <label htmlFor="email">Email</label>
-            <input type="email" name="email" />
+              <label htmlFor="email">Email</label>
+              <input type="email" name="email" />
 
-            <label htmlFor="message">Message</label>
-            <textarea name="message" rows="3"></textarea>
+              <label htmlFor="message">Message</label>
+              <textarea name="message"></textarea>
 
-            <input type="submit" />
+              <input type="submit" />
+            </div>
           </form>
+          <small id="copyright">copyright information here</small>
         </footer>
       </React.Fragment>
     );
