@@ -27,67 +27,74 @@ class ContribRepo extends Component {
     if(this.props.data !== null){
       this.setState({ info: this.props.data['repos'] });
       this.setState({ copy: this.props.data['repos'] });
-      this.setState({ languages: this.props.data['languages-in-repos'] || {} });
+      if(!this.props.data['languages-in-repos']){
+        return this.setRepoValues(this.props.data['repos']);
+      }
+      return this.setState({ languages: this.props.data['languages-in-repos'] || {} });
     }else{
       let stateCopy;
       return this.props.updateInitialState(this.props.fetchInitialData)
               .then( data =>{
-                stateCopy = data[this.props.name].repos;
-                return data;
-              })
-              .then( data =>{
                 let repos = data[this.props.name].repos;
-
-                let languageRequest = repos.map( r =>{
-                  return Promise.all(r.repos.map( repo =>{
-                    return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['languages_url'], 'total_languages', repo, 'open-source')
-                    .then( data =>{
-                      repo['total_languages'] = data.data;
-                      let i = stateCopy.indexOf(r);
-                      let j = stateCopy[i].repos.indexOf(repo);
-
-                      stateCopy[i].repos[j] = repo;
-                      if( j === stateCopy[i].repos.length -1 ){
-                        this.setState({ languages : data.languages });
-                      }
-                    });
-                  }))
-                })
-
-                let  commitRequest = repos.map( r =>{
-                  return Promise.all(r.repos.map( repo =>{
-                    return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['commits_url'].split('{')[0], 'total_commits', repo, 'open-source')
-                      .then( data =>{
-                        repo['total_commits'] = data.data;
-                        stateCopy[stateCopy.indexOf(repo)] = repo;
-                      })
-                    }))
-                });
-
-                let contribRequest = repos.map( r =>{
-                  return Promise.all(r.repos.map( repo =>{
-                  return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['contributors_url'], 'total_contributors', repo,'open-source')
-                    .then( data =>{
-                      repo['total_contributors'] = data.data;
-                      stateCopy[stateCopy.indexOf(repo)] = repo;
-                    })
-                  }))
-                })
-
-                return Promise.all(languageRequest, commitRequest, contribRequest)
-                              .then( res =>{
-                                return res
-                              })
-                              .then( res =>{
-                                console.log(res);
-                                this.setState({ info: stateCopy });
-                                this.setState({ copy: stateCopy });
-                              })
+                this.setState({ info: repos });
+                this.setState({ copy: repos });
+                
+                return this.setRepoValues(repos);
               });
     }
   }
 
   //Functions that manipulate data/behavior
+
+  setRepoValues = (repos) =>{
+    let stateCopy = repos;
+
+    let languageRequest = repos.map( r =>{
+      return Promise.all(r.repos.map( repo =>{
+        return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['languages_url'], 'total_languages', repo, 'open-source')
+        .then( data =>{
+          repo['total_languages'] = data.data;
+          let i = stateCopy.indexOf(r);
+          let j = stateCopy[i].repos.indexOf(repo);
+
+          stateCopy[i].repos[j] = repo;
+          if( j === stateCopy[i].repos.length -1 ){
+            this.setState({ languages : data.languages });
+          }
+        });
+      }))
+    })
+
+    let  commitRequest = repos.map( r =>{
+      return Promise.all(r.repos.map( repo =>{
+        return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['commits_url'].split('{')[0], 'total_commits', repo, 'open-source')
+          .then( data =>{
+            repo['total_commits'] = data.data;
+            stateCopy[stateCopy.indexOf(repo)] = repo;
+          })
+        }))
+    });
+
+    let contribRequest = repos.map( r =>{
+      return Promise.all(r.repos.map( repo =>{
+      return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['contributors_url'], 'total_contributors', repo,'open-source')
+        .then( data =>{
+          repo['total_contributors'] = data.data;
+          stateCopy[stateCopy.indexOf(repo)] = repo;
+        })
+      }))
+    })
+
+    return Promise.all(languageRequest, commitRequest, contribRequest)
+                  .then( res =>{
+                    return res
+                  })
+                  .then( res =>{
+                    console.log(res);
+                    this.setState({ info: stateCopy });
+                    this.setState({ copy: stateCopy });
+                  })
+  }
 
   addToState = (getDat, url, name, repo) =>{
     return this.props.updatePartofStateArray(getDat, url, name, repo, 'open-source')
@@ -229,9 +236,9 @@ class ContribRepo extends Component {
 
   createSortIcon = (name) =>{
     if(!this.state.ascending[name]){
-      return <i class="fas fa-sort-up"></i>;
+      return <i className="fas fa-sort-up"></i>;
     }
-    return <i class="fas fa-sort-down"></i>;
+    return <i className="fas fa-sort-down"></i>;
   }
 
   render(){

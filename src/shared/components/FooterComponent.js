@@ -15,16 +15,16 @@ export default class Footer extends Component {
           <nav id='social-links'>
             <ul>
               <li>
-                <a className='social-link' href='https://github.com/booellean' target="_blank"><i class="fab fa-github"></i></a>
+                <a className='social-link' href='https://github.com/booellean' target="_blank"><i className="fab fa-github"></i></a>
               </li>
               <li>
-                <a className='social-link' href='https://www.linkedin.com/in/elle-pope-dev/' target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a className='social-link' href='https://www.linkedin.com/in/elle-pope-dev/' target="_blank"><i className="fab fa-linkedin"></i></a>
               </li>
               <li>
-                <a className='social-link' href='https://twitter.com/booellean' target="_blank"><i class="fab fa-twitter"></i></a>
+                <a className='social-link' href='https://twitter.com/booellean' target="_blank"><i className="fab fa-twitter"></i></a>
               </li>
               <li>
-                <a className='social-link' href='https://itch.io/profile/booellean' target="_blank"><i class="fab fa-itch-io"></i></a>
+                <a className='social-link' href='https://itch.io/profile/booellean' target="_blank"><i className="fab fa-itch-io"></i></a>
               </li>
             </ul>
           </nav>

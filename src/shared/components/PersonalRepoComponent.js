@@ -1,6 +1,17 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+
+import {
+  XYPlot,
+  XAxis,
+  YAxis,
+  VerticalGridLines,
+  HorizontalGridLines,
+  LineSeries
+} from 'react-vis';
+
 import renderFetch from '../../api/render';
+
 import Language from './SnippetLanguageComponent';
 import Contributor from './SnippetContribComponent';
 import Commit from './SnippetCommitComponent';
@@ -18,7 +29,9 @@ class PersonalRepo extends Component {
         alpha : true,
       },
       currentLang : 'reset',
-      languages : {}
+      languages : {},
+      languageData : {},
+      commitData: {}
     }
   }
 
@@ -26,59 +39,89 @@ class PersonalRepo extends Component {
     if(this.props.data !== null){
       this.setState({ info: this.props.data['repos'] });
       this.setState({ copy: this.props.data['repos'] });
-      this.setState({ languages: this.props.data['languages-in-repos'] || {} });
+      if(!this.props.data['languages-in-repos']){
+        return this.setRepoValues(this.props.data['repos']);
+      }
+      return this.setState({ languages: this.props.data['languages-in-repos'] || {} });
     }else{
-      let stateCopy;
+
       return this.props.updateInitialState(this.props.fetchInitialData)
               .then( data =>{
-                stateCopy = data[this.props.name].repos;
-                return data;
-              })
-              .then( data =>{
                 let repos = data[this.props.name].repos;
-
-                let languageRequest = repos.map( repo =>{
-                  return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['languages_url'], 'total_languages', repo, 'repos')
-                    .then( data =>{
-                      repo['total_languages'] = data.data;
-                      stateCopy[stateCopy.indexOf(repo)] = repo;
-                      console.log('languages!');
-                      if(stateCopy.indexOf(repo) === (stateCopy.length - 1)){
-                        this.setState({ languages : data.languages });
-                      }
-                    });
-                })
-
-                let  commitRequest = repos.map( repo =>{
-                  return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['commits_url'].split('{')[0], 'total_commits', repo, 'repos')
-                    .then( data =>{
-                      repo['total_commits'] = data.data;
-                      stateCopy[stateCopy.indexOf(repo)] = repo;
-                    })
-                });
-
-                let contribRequest = repos.map( repo =>{
-                  return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['contributors_url'], 'total_contributors', repo,'repos')
-                    .then( data =>{
-                      repo['total_contributors'] = data.data;
-                      stateCopy[stateCopy.indexOf(repo)] = repo;
-                    })
-                })
-
-                return Promise.all(languageRequest, commitRequest, contribRequest)
-                              .then( res =>{
-                                return res
-                              })
-                              .then( res =>{
-                                console.log(res);
-                                this.setState({ info: stateCopy });
-                                this.setState({ copy: stateCopy });
-                              })
+                this.setState({ info: repos });
+                this.setState({ copy: repos });
+                return this.setRepoValues(repos);
               });
     }
   }
 
   //Functions that manipulate data/behavior
+
+  setRepoValues = (repos) =>{
+    let stateCopy = repos;
+    let languageCopy = {};
+    let commitCopy = {};
+
+    let languageRequest = repos.map( repo =>{
+      return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['languages_url'], 'total_languages', repo, 'repos')
+        .then( data =>{
+          repo['total_languages'] = data.data;
+          stateCopy[stateCopy.indexOf(repo)] = repo;
+
+          let keys = Object.keys(data.data[0]);
+
+          keys.forEach(key =>{
+            languageCopy[key] = (data.data[0][key] + languageCopy[key]) || data.data[0][key];
+          })
+
+          if(stateCopy.indexOf(repo) === (stateCopy.length - 1)){
+            this.setState({ languages : data.languages });
+            this.setState({ languageData : languageCopy })
+          }
+        });
+    })
+
+    let  commitRequest = repos.map( repo =>{
+      return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['commits_url'].split('{')[0], 'total_commits', repo, 'repos')
+        .then( data =>{
+
+          data.data.filter( commit => commit.author.login === 'booellean');
+
+          repo['total_commits'] = data.data;
+
+          data.data.forEach( commit =>{
+            let month = new Date(commit.commit.author.date).toLocaleDateString('en-US', { month : '2-digit' })
+            let year = new Date(commit.commit.author.date).toLocaleDateString('en-US', { year : 'numeric' })
+            let date = `${year}/${month}`;
+            commitCopy[date] = (commitCopy[date] + 1) || 1;
+          })
+
+          stateCopy[stateCopy.indexOf(repo)] = repo;
+
+          if(stateCopy.indexOf(repo) === (stateCopy.length - 1)){
+            this.setState({ commitData : commitCopy })
+            console.log(this.state.commitData);
+          }
+        })
+    });
+
+    let contribRequest = repos.map( repo =>{
+      return this.props.updatePartofStateArray(renderFetch.renderRepoUrlRequests, repo['contributors_url'], 'total_contributors', repo,'repos')
+        .then( data =>{
+          repo['total_contributors'] = data.data;
+          stateCopy[stateCopy.indexOf(repo)] = repo;
+        })
+    })
+
+    return Promise.all(languageRequest, commitRequest, contribRequest)
+                  .then( res =>{
+                    return res
+                  })
+                  .then( res =>{
+                    this.setState({ info: stateCopy });
+                    this.setState({ copy: stateCopy });
+                  })
+  }
 
   addToState = (getDat, url, name, repo) =>{
     return this.props.updatePartofStateArray(getDat, url, name, repo, 'repos')
@@ -172,6 +215,32 @@ class PersonalRepo extends Component {
      //Put Loading bar here;
      return false;
    }else{
+    const axisStyle = {
+      ticks: {
+        fontSize: '14px',
+        color: '#333'
+      },
+      title: {
+        fontSize: '16px',
+        color: '#333'
+      }
+    };
+
+    let length = Object.keys(this.state.commitData).length;
+
+    const xDomain = [0, length];
+    const yDomain = [0, 175];
+
+    const getCommitPoints = () =>{
+      let arr = [];
+      let keys = Object.keys(this.state.commitData);
+      keys.forEach(key =>{
+        arr.push( { x : `${keys.indexOf(key)}`, y : this.state.commitData[key], label: key} );
+      })
+      console.log(arr);
+      return arr;
+    }
+
     const listItems = this.state.copy.map( item => {
         return(
           this.createRepoNode(item)
@@ -188,9 +257,15 @@ class PersonalRepo extends Component {
             <p onClick={(e) => this.sortByName(e, 'alpha')}>Sort by Repo Name</p>
             {this.createLanguagesList(this.state.languages)}
           </header>
-            <ul>
-              {listItems}
-            </ul>
+          <XYPlot width={600} height={300} {...{xDomain, yDomain}}>
+            <VerticalGridLines />
+            <HorizontalGridLines />
+            <XAxis on0={true}/>
+            <YAxis on0={true}/>
+            <LineSeries
+              data={getCommitPoints()}
+            />
+          </XYPlot>
         </React.Fragment>
       );
     }

@@ -13,6 +13,11 @@ img {
   width: 100%;
 }
 
+h2, h3, h4, h5, h6 {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: bold;
+}
+
 .App {
   min-height: 100vh;
   display: flex;
@@ -40,9 +45,21 @@ img {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
+  align-items: center;
   background: #0dc5c1;
   /* background: #04bfb6; */
   /* background: #00B2CA; */
+}
+
+#header>h1{
+  font-family: 'Courgette', cursive;
+  text-shadow: -.1em .1em .1em rgba(133, 135, 140, .7);
+  color: #fff;
+}
+
+#site-nav>ul{
+  display: flex;
+  flex-flow: row wrap;
 }
 
 h1{
@@ -50,7 +67,7 @@ h1{
 }
 
 #logo{
-  width: 5rem;
+  width: 2rem;
 }
 
 /* styles for footer */
@@ -58,6 +75,7 @@ h1{
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
+  background: #00B2CA;
 }
 
 /* styles for contact form */
@@ -114,9 +132,13 @@ nav>ul>li{
 #page-header{
   position: sticky;
   top: 0;
-  background: #00B2CA;
+  background: #BCEDFF;
   height: 100vh;
+  max-height: 100%;
   width: 30%;
+  color: rgba(0, 50, 66, 0.9);
+  text-shadow: -.1em .1em .1em rgba(255, 255, 255, .7);
+  font-family: 'Dosis', sans-serif;
 }
 
 #content{
