@@ -9,8 +9,7 @@ import {
   HorizontalGridLines,
   LineMarkSeries,
   Hint,
-  VerticalBarSeries,
-  VerticalBarSeriesCanvas
+  VerticalBarSeries
 } from 'react-vis';
 
 import renderFetch from '../../api/render';
@@ -32,8 +31,9 @@ class PersonalRepo extends Component {
         alpha : true,
       },
       currentLang : 'reset',
+      useCanvas: false,
       languages : {},
-      languageData : {},
+      languageData : [],
       commitData: {},
       xMinTime: Math.floor((new Date().setFullYear(new Date().getFullYear() - 3) /1000)),
       xMaxTime: Math.floor(new Date() / 1000)
@@ -80,8 +80,14 @@ class PersonalRepo extends Component {
           })
 
           if(stateCopy.indexOf(repo) === (stateCopy.length - 1)){
+            let arr = [];
+            let k = Object.keys(languageCopy);
+            k.forEach( key =>{
+              arr.push({x: key, y: languageCopy[key]});
+            })
+            console.log(arr);
             this.setState({ languages : data.languages });
-            this.setState({ languageData : languageCopy })
+            this.setState({ languageData : arr })
           }
         });
     })
@@ -240,17 +246,6 @@ class PersonalRepo extends Component {
       }
     };
 
-    // let length = Object.keys(this.state.commitData).length;
-
-    // const xDomain = () =>{
-    //   let arr = [];
-    //   let keys = Object.keys(this.state.commitData);
-
-    //   arr = [this.state.commitData[keys[0]], this.state.commitData[keys[keys.length-1]]];
-    //   return arr;
-    // };
-    // const yDomain = [0, 250];
-
     const getCommitPoints = () =>{
       let arr = [];
       let keys = Object.keys(this.state.commitData);
@@ -263,7 +258,9 @@ class PersonalRepo extends Component {
     }
 
     const {value} = this.state;
-    console.log(value);
+
+    const {useCanvas} = this.state;
+    const BarSeries = useCanvas ? VerticalBarSeriesCanvas : VerticalBarSeries;
 
     const listItems = this.state.copy.map( item => {
         return(
@@ -313,7 +310,23 @@ class PersonalRepo extends Component {
               ) : null}
             </XYPlot>
             
-            <h3>Commits Per Repo</h3>
+            <h3>Total Languaes by Line</h3>
+            <XYPlot xType="ordinal" width={600} height={300} xDistance={100}>
+              <VerticalGridLines />
+              <HorizontalGridLines />
+              <XAxis />
+              <YAxis tickFormat={ k =>{
+                if(k>0){
+                  if(k>999999){
+                    return `${Math.floor(k/100000)/10}M`
+                  }else{
+                    return `${Math.floor(k/1000)}k`
+                  }
+                }
+                return k
+              }}/>          
+              <BarSeries className="language-data" data={this.state.languageData} />
+            </XYPlot>
           </article>
         </React.Fragment>
       );
