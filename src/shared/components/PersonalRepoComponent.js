@@ -7,7 +7,10 @@ import {
   YAxis,
   VerticalGridLines,
   HorizontalGridLines,
-  LineSeries
+  LineMarkSeries,
+  Hint,
+  VerticalBarSeries,
+  VerticalBarSeriesCanvas
 } from 'react-vis';
 
 import renderFetch from '../../api/render';
@@ -31,7 +34,9 @@ class PersonalRepo extends Component {
       currentLang : 'reset',
       languages : {},
       languageData : {},
-      commitData: {}
+      commitData: {},
+      xMinTime: Math.floor((new Date().setFullYear(new Date().getFullYear() - 3) /1000)),
+      xMaxTime: Math.floor(new Date() / 1000)
     }
   }
 
@@ -98,10 +103,7 @@ class PersonalRepo extends Component {
 
           stateCopy[stateCopy.indexOf(repo)] = repo;
 
-          if(stateCopy.indexOf(repo) === (stateCopy.length - 1)){
-            this.setState({ commitData : commitCopy })
-            console.log(this.state.commitData);
-          }
+          this.setState({ commitData : commitCopy })
         })
     });
 
@@ -209,6 +211,18 @@ class PersonalRepo extends Component {
     })
   }
 
+  //Take from react-vis documentation directly.
+  //https://github.com/uber/react-vis/blob/master/showcase/axes/dynamic-hints.js
+  _forgetValue = () => {
+    this.setState({
+      value: null
+    });
+  };
+
+  _rememberValue = value => {
+    this.setState({value});
+  };
+
   render(){
 
    if(!this.state.copy){
@@ -226,20 +240,30 @@ class PersonalRepo extends Component {
       }
     };
 
-    let length = Object.keys(this.state.commitData).length;
+    // let length = Object.keys(this.state.commitData).length;
 
-    const xDomain = [0, length];
-    const yDomain = [0, 175];
+    // const xDomain = () =>{
+    //   let arr = [];
+    //   let keys = Object.keys(this.state.commitData);
+
+    //   arr = [this.state.commitData[keys[0]], this.state.commitData[keys[keys.length-1]]];
+    //   return arr;
+    // };
+    // const yDomain = [0, 250];
 
     const getCommitPoints = () =>{
       let arr = [];
       let keys = Object.keys(this.state.commitData);
+      keys.sort();
       keys.forEach(key =>{
-        arr.push( { x : `${keys.indexOf(key)}`, y : this.state.commitData[key], label: key} );
+        // arr.push( { x : `${keys.indexOf(key)}`, y : this.state.commitData[key], label: key} );
+        arr.push( { x : `${Math.floor(new Date(key) /1000)}`, y : this.state.commitData[key]} );
       })
-      console.log(arr);
       return arr;
     }
+
+    const {value} = this.state;
+    console.log(value);
 
     const listItems = this.state.copy.map( item => {
         return(
@@ -257,15 +281,40 @@ class PersonalRepo extends Component {
             <p onClick={(e) => this.sortByName(e, 'alpha')}>Sort by Repo Name</p>
             {this.createLanguagesList(this.state.languages)}
           </header>
-          <XYPlot width={600} height={300} {...{xDomain, yDomain}}>
-            <VerticalGridLines />
-            <HorizontalGridLines />
-            <XAxis on0={true}/>
-            <YAxis on0={true}/>
-            <LineSeries
-              data={getCommitPoints()}
-            />
-          </XYPlot>
+          <article id="content">
+            <h3>Total Activity</h3>
+            <XYPlot
+              width={600}
+              height={300}
+              yDomain={[0, 250]}
+              xDomain={[this.state.xMinTime, this.state.xMaxTime]}>
+              <VerticalGridLines />
+              <HorizontalGridLines />
+              <XAxis tickLabelAngle={-45} xType="time"
+                tickFormat={d => {
+                  let date = new Date(d*1000);
+                  return date.toLocaleDateString('en-US', { month: "2-digit", year: "numeric" });
+                }}
+                />
+              <YAxis/>
+              <LineMarkSeries
+                onValueMouseOver={this._rememberValue}
+                onValueMouseOut={this._forgetValue}
+                data={getCommitPoints()}
+              />
+              {value ? (
+                <Hint value={value}>
+                  <div className="rv-hint__content">
+                    {`${value.y} Commits`}
+                    <br />
+                    {`occurred on ${new Date(value.x*1000).toLocaleDateString('en-US', { month: "long", year: "numeric" })}`}
+                  </div>
+                </Hint>
+              ) : null}
+            </XYPlot>
+            
+            <h3>Commits Per Repo</h3>
+          </article>
         </React.Fragment>
       );
     }

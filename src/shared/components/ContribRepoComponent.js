@@ -38,7 +38,7 @@ class ContribRepo extends Component {
                 let repos = data[this.props.name].repos;
                 this.setState({ info: repos });
                 this.setState({ copy: repos });
-                
+
                 return this.setRepoValues(repos);
               });
     }
@@ -280,9 +280,11 @@ class ContribRepo extends Component {
             {this.createLanguagesList(this.state.languages)}
           </ul>
           </header>
+          <article id="content">
             <ul>
               {listItems}
             </ul>
+          </article>
         </React.Fragment>
       );
     }

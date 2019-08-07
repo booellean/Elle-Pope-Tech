@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import '../../node_modules/react-vis/dist/style.css';
 import Header from './components/HeaderComponent';
 import Footer from './components/FooterComponent';
 import PersonalRepo from './components/PersonalRepoComponent';
