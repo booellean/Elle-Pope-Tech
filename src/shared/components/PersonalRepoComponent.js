@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import {
-  XYPlot,
+  FlexibleXYPlot,
   XAxis,
   YAxis,
   VerticalGridLines,
@@ -279,54 +279,58 @@ class PersonalRepo extends Component {
             {this.createLanguagesList(this.state.languages)}
           </header>
           <article id="content">
-            <h3>Total Activity</h3>
-            <XYPlot
-              width={600}
-              height={300}
-              yDomain={[0, 250]}
-              xDomain={[this.state.xMinTime, this.state.xMaxTime]}>
-              <VerticalGridLines />
-              <HorizontalGridLines />
-              <XAxis tickLabelAngle={-45} xType="time"
-                tickFormat={d => {
-                  let date = new Date(d*1000);
-                  return date.toLocaleDateString('en-US', { month: "2-digit", year: "numeric" });
-                }}
+            <div id="graph-container">
+              <h3>Total Activity</h3>
+              <FlexibleXYPlot
+                height={300}
+                yDomain={[0, 250]}
+                xDomain={[this.state.xMinTime, this.state.xMaxTime]}>
+                <VerticalGridLines />
+                <HorizontalGridLines />
+                <XAxis tickLabelAngle={-45} xType="time"
+                  tickFormat={d => {
+                    let date = new Date(d*1000);
+                    return date.toLocaleDateString('en-US', { month: "2-digit", year: "numeric" });
+                  }}
+                  />
+                <YAxis/>
+                <LineMarkSeries
+                  onValueMouseOver={this._rememberValue}
+                  onValueMouseOut={this._forgetValue}
+                  data={getCommitPoints()}
                 />
-              <YAxis/>
-              <LineMarkSeries
-                onValueMouseOver={this._rememberValue}
-                onValueMouseOut={this._forgetValue}
-                data={getCommitPoints()}
-              />
-              {value ? (
-                <Hint value={value}>
-                  <div className="rv-hint__content">
-                    {`${value.y} Commits`}
-                    <br />
-                    {`occurred on ${new Date(value.x*1000).toLocaleDateString('en-US', { month: "long", year: "numeric" })}`}
-                  </div>
-                </Hint>
-              ) : null}
-            </XYPlot>
-            
-            <h3>Total Languaes by Line</h3>
-            <XYPlot xType="ordinal" width={600} height={300} xDistance={100}>
-              <VerticalGridLines />
-              <HorizontalGridLines />
-              <XAxis />
-              <YAxis tickFormat={ k =>{
-                if(k>0){
-                  if(k>999999){
-                    return `${Math.floor(k/100000)/10}M`
-                  }else{
-                    return `${Math.floor(k/1000)}k`
+                {value ? (
+                  <Hint value={value}>
+                    <div className="rv-hint__content">
+                      {`${value.y} Commits`}
+                      <br />
+                      {`occurred on ${new Date(value.x*1000).toLocaleDateString('en-US', { month: "long", year: "numeric" })}`}
+                    </div>
+                  </Hint>
+                ) : null}
+              </FlexibleXYPlot>
+              
+              <h3>Total Languaes by Line</h3>
+              <FlexibleXYPlot 
+                xType="ordinal"
+                xDistance={100}
+                height={300}>
+                <VerticalGridLines />
+                <HorizontalGridLines />
+                <XAxis />
+                <YAxis tickFormat={ k =>{
+                  if(k>0){
+                    if(k>999999){
+                      return `${Math.floor(k/100000)/10}M`
+                    }else{
+                      return `${Math.floor(k/1000)}k`
+                    }
                   }
-                }
-                return k
-              }}/>          
-              <BarSeries className="language-data" data={this.state.languageData} />
-            </XYPlot>
+                  return k
+                }}/>          
+                <BarSeries className="language-data" data={this.state.languageData} />
+              </FlexibleXYPlot>
+            </div>
           </article>
         </React.Fragment>
       );
