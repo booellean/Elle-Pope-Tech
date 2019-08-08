@@ -109,6 +109,10 @@ export default class App extends Component {
             })
           }else{
             let index = arr.indexOf(repo);
+            console.log(arr);
+            console.log(repo);
+            console.log(this.state[stateName].repos);
+            console.log(arr.indexOf(repo));
 
             if(name === 'total_languages'){
               let keys = Object.keys(data[0]);

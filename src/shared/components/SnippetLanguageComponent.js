@@ -15,7 +15,7 @@ class Language extends Component {
     if(this.props.repo[this.props.name] !== undefined){
       this.setState({ 'repo-info' : this.props.repo[this.props.name] });
     }else{
-      return this.props.addToState(renderFetch.renderRepoUrlRequests, this.props.url, this.props.name, this.props.repo)
+      return renderFetch.renderRepoUrlRequests(this.props.url, 1)
               .then( data =>{
                 return this.setState({ 'repo-info': data });
               })
