@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import RepoNode from './RepoNodeComponent';
 import renderFetch from '../../api/render';
 import Language from './SnippetLanguageComponent';
 import Contributor from './SnippetContribComponent';
@@ -203,26 +204,6 @@ class ContribRepo extends Component {
 
   //Functions that create nodes
 
-  createRepoNode = (item) =>{
-    //console.log(this.state.copy);
-    return(
-      <li className="repo-info" key={item.id}>
-        <Link to={`/${this.props.name}/${item['name']}`}>
-          <h3>{item['name']}</h3>
-        </Link>
-        <p>{item['description']}</p>
-        <details>
-          <p>Size: {item['size']}</p>
-          <p>Created: {item['created_at']}</p>
-          <p>Last Commit: {item['updated_at']}</p>
-          <Language repo={item} addToState={this.addToState.bind(this)} name='total_languages' title='Languages' url={item['languages_url']}/>
-          <Commit repo={item} addToState={this.addToState.bind(this)} name='total_commits' title='Commits' url={item['commits_url'].split('{')[0]}/>
-          <Contributor repo={item} addToState={this.addToState.bind(this)} name='total_contributors' title='Contributors' url={item['contributors_url']}/>
-        </details>
-      </li>
-    );
-  }
-
   createLanguagesList = (langs) =>{
     let keys = Object.keys(langs);
 
@@ -248,14 +229,44 @@ class ContribRepo extends Component {
      return false;
    }else{
     const listItems = this.state.copy.map( item => {
+      let options = {weekday: "long", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", year: "numeric", };
         return(
           <li className="org-info" key={item.org.login}>
-
             <Link to={`/${this.props.name}/${item.org.login}`}>
-              <h3>{item.org.name}</h3>
+              {item.org.avatar_url ? (
+                <img src={item.org.avatar_url} alt="Organization Avatar"/>
+              ) : null}
+              <h2>{item.org.name}</h2>
             </Link>
-            {item.repos.map( repo =>{
-              return this.createRepoNode(repo);
+            {item.org.type !== "" ? (
+              <p>{item.org.type}</p>
+            ) : null}
+            {item.org.description !== "" ? (
+              <p>{item.org.description}</p>
+            ) : null}
+            <dl>
+              <dt>Operating since</dt><dd>{new Date(item.org["created_at"]).toLocaleDateString('en-US', options)}</dd>
+              {item.org.blog !== "" ? (
+                <React.Fragment>
+                  <dt>Blog</dt><dd>{item.org.blog}</dd>
+                </React.Fragment>
+              ) : null}
+              {item.org["public_repos"] === 0 || item.repos.length === 0 ? (
+                <p>Looks like all the contributions are private!  Please ask the Author directly about contributions to this Organization.</p>
+              ) :(
+                <React.Fragment>
+                  <dt>Public Projects</dt><dd>{item.org["public_repos"]}</dd>
+                  <dt>Author Contributions</dt><dd>{item.repos.length}</dd>
+                </React.Fragment>
+              )}
+
+            </dl>
+
+            {item.repos.length !== 0 ? (
+            <h3>Repos Contributed To:</h3>
+            ) : null}
+            {item.repos.map( item =>{
+              return <RepoNode item={item} name={this.props.name} />
             })}
           </li>
         );

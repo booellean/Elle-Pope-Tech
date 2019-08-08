@@ -45,7 +45,10 @@ class Repo extends Component {
    }else{
     // const listItems = this.state.info.map( item => {
     //     return(
-    //       this.createRepoNode(item)
+    // //       this.createRepoNode(item)
+    // <Language repo={item} addToState={this.addToState.bind(this)} name='total_languages' title='Languages' url={item['languages_url']}/>
+    // <Commit repo={item} addToState={this.addToState.bind(this)} name='total_commits' title='Commits' url={item['commits_url'].split('{')[0]}/>
+    // <Contributor repo={item} addToState={this.addToState.bind(this)} name='total_contributors' title='Contributors' url={item['contributors_url']}/>
     //     );
     //   });
 

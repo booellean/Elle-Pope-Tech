@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import RepoNode from './RepoNodeComponent';
 import { Link } from 'react-router-dom';
 
 import {
@@ -42,6 +43,8 @@ class PersonalRepo extends Component {
 
   componentDidMount(){
     if(this.props.data !== null){
+      this.sortInitialRepos(this.props.data['repos']);
+      
       this.setState({ info: this.props.data['repos'] });
       this.setState({ copy: this.props.data['repos'] });
       if(!this.props.data['languages-in-repos']){
@@ -53,6 +56,7 @@ class PersonalRepo extends Component {
       return this.props.updateInitialState(this.props.fetchInitialData)
               .then( data =>{
                 let repos = data[this.props.name].repos;
+                this.sortInitialRepos(repos);
                 this.setState({ info: repos });
                 this.setState({ copy: repos });
                 return this.setRepoValues(repos);
@@ -85,7 +89,6 @@ class PersonalRepo extends Component {
             k.forEach( key =>{
               arr.push({x: key, y: languageCopy[key]});
             })
-            console.log(arr);
             this.setState({ languages : data.languages });
             this.setState({ languageData : arr })
           }
@@ -141,8 +144,16 @@ class PersonalRepo extends Component {
       });
   }
 
+  sortInitialRepos = (repos) =>{
+    console.log(repos);
+    return repos.sort( (a, b) =>{
+      return new Date(a['updated_at']) < new Date(b['updated_at']) ? 1 : -1;
+    });
+  }
+
   sortLanguage = (e, lang) =>{
-    e.preventDefault();
+    if(e) e.preventDefault();
+    
     if(lang === 'reset'){
       return this.setState({ copy : this.state.info })
     }
@@ -157,7 +168,7 @@ class PersonalRepo extends Component {
   }
 
   sortByDate = (e, type, state) =>{
-    e.preventDefault();
+    if(e) e.preventDefault();
 
     this.state.info.sort( (a, b) =>{
         if(this.state.ascending[state] === true){
@@ -171,7 +182,7 @@ class PersonalRepo extends Component {
   }
 
   sortByName = (e, state) =>{
-    e.preventDefault();
+    if(e) e.preventDefault();
 
     //Sort by repo name
     this.state.info.sort( (a, b) =>{
@@ -186,25 +197,6 @@ class PersonalRepo extends Component {
   }
 
   //Functions that create nodes
-
-  createRepoNode = (item) =>{
-    return(
-      <li className="repo-info" key={item.id}>
-        <Link to={`/${this.props.name}/${item['name']}`}>
-          <h3>{item['name']}</h3>
-        </Link>
-        <p>{item['description']}</p>
-        <details>
-          <p>Size: {item['size']}</p>
-          <p>Created: {item['created_at']}</p>
-          <p>Last Commit: {item['updated_at']}</p>
-          <Language repo={item} addToState={this.addToState.bind(this)} name='total_languages' title='Languages' url={item['languages_url']}/>
-          <Commit repo={item} addToState={this.addToState.bind(this)} name='total_commits' title='Commits' url={item['commits_url'].split('{')[0]}/>
-          <Contributor repo={item} addToState={this.addToState.bind(this)} name='total_contributors' title='Contributors' url={item['contributors_url']}/>
-        </details>
-      </li>
-    );
-  }
 
   createLanguagesList = (langs) =>{
     let keys = Object.keys(langs);
@@ -235,23 +227,12 @@ class PersonalRepo extends Component {
      //Put Loading bar here;
      return false;
    }else{
-    const axisStyle = {
-      ticks: {
-        fontSize: '14px',
-        color: '#333'
-      },
-      title: {
-        fontSize: '16px',
-        color: '#333'
-      }
-    };
 
     const getCommitPoints = () =>{
       let arr = [];
       let keys = Object.keys(this.state.commitData);
       keys.sort();
       keys.forEach(key =>{
-        // arr.push( { x : `${keys.indexOf(key)}`, y : this.state.commitData[key], label: key} );
         arr.push( { x : `${Math.floor(new Date(key) /1000)}`, y : this.state.commitData[key]} );
       })
       return arr;
@@ -263,10 +244,8 @@ class PersonalRepo extends Component {
     const BarSeries = useCanvas ? VerticalBarSeriesCanvas : VerticalBarSeries;
 
     const listItems = this.state.copy.map( item => {
-        return(
-          this.createRepoNode(item)
-        );
-      });
+      return <RepoNode item={item} name={this.props.name} />
+    });
 
       return(
         <React.Fragment>
@@ -279,7 +258,7 @@ class PersonalRepo extends Component {
             {this.createLanguagesList(this.state.languages)}
           </header>
           <article id="content">
-            <div id="graph-container">
+            <section id="graph-container">
               <h3>Total Activity</h3>
               <FlexibleXYPlot
                 height={300}
@@ -310,7 +289,7 @@ class PersonalRepo extends Component {
                 ) : null}
               </FlexibleXYPlot>
               
-              <h3>Total Languaes by Line</h3>
+              <h3>Total Languages by Line</h3>
               <FlexibleXYPlot 
                 xType="ordinal"
                 xDistance={100}
@@ -330,7 +309,12 @@ class PersonalRepo extends Component {
                 }}/>          
                 <BarSeries className="language-data" data={this.state.languageData} />
               </FlexibleXYPlot>
-            </div>
+            </section>
+
+            <section>
+              <h3>Personal Repos</h3>
+            </section>
+            {listItems}
           </article>
         </React.Fragment>
       );
