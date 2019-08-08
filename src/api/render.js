@@ -226,12 +226,10 @@ const renderFetch = {
           return JSON.parse(res);
         })
         .then( res =>{
-          console.log(res);
           let currentOrg = res['open-source'].repos.filter( item =>{
             return item.org.login.toLowerCase() === reqId.toLowerCase();
           })
           let obj = { 'open-source': res['open-source'], 'org' : currentOrg[0] };
-          console.log(obj);
           return preRender(obj);
         })
     );

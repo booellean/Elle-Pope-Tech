@@ -66,7 +66,6 @@ app.get('*', (req, res, next) =>{
 })
 
 app.post('*', async (req, res) => {
-  console.log(req.url);
   try {
     const { name, email, message } = req.body
     const final = {

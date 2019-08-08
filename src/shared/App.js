@@ -36,7 +36,7 @@ export default class App extends Component {
 
     keysArr.forEach( loc =>{
       if(this.state[loc] === null){
-        return this.state[loc] = data[loc];
+        this.state[loc] = data[loc];
       }else{
         console.error("Error: No state found");
       }

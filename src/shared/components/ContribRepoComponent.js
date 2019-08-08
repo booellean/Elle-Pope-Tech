@@ -91,7 +91,6 @@ class ContribRepo extends Component {
                     return res
                   })
                   .then( res =>{
-                    console.log(res);
                     this.setState({ info: stateCopy });
                     this.setState({ copy: stateCopy });
                   })
@@ -121,8 +120,6 @@ class ContribRepo extends Component {
     });
 
     filteredLangs = filteredLangs.filter( arr => arr );
-
-    console.log(filteredLangs);
 
     this.setState({ copy : filteredLangs });
     this.setState({ currentLang : lang });
@@ -166,7 +163,6 @@ class ContribRepo extends Component {
       }
     })
 
-    console.log(this.state.ascending[state]);
     this.sortLanguage(e, this.state.currentLang);
 
     return this.state.ascending[state] = !this.state.ascending[state];
@@ -196,7 +192,6 @@ class ContribRepo extends Component {
           });
         break;
       default:
-        console.log('okay, whatever, I will figure it out later');
     }
     this.sortLanguage(e, this.state.currentLang);
     return this.state.ascending[state] = !this.state.ascending[state];

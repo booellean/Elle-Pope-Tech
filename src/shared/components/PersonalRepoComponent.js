@@ -145,7 +145,6 @@ class PersonalRepo extends Component {
   }
 
   sortInitialRepos = (repos) =>{
-    console.log(repos);
     return repos.sort( (a, b) =>{
       return new Date(a['updated_at']) < new Date(b['updated_at']) ? 1 : -1;
     });

@@ -16,7 +16,6 @@ class Home extends Component {
 
   componentDidMount(){
     if(this.props.data !== null){
-      console.log(this.props.data);
       this.setState({ info: this.props.data[0] });
     }else{
       return this.props.fetchInitialData()

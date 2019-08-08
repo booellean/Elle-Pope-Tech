@@ -66,7 +66,6 @@ router.get('/open-source', (req, res) => {
 router.get('/details', (req, res, next) => {
   let url = req.params.url;
   let name = req.params.name;
-  console.log(req.params);
   renderFetch.renderRepoUrlRequests(url, 1, name)
   .then( (data) =>{
     res.send(data);

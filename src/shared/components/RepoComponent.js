@@ -13,6 +13,7 @@ class Repo extends Component {
     }
   }
 
+
   componentDidMount(){
     let path = window.location.pathname.split('/')
     let repo = path[path.length - 1];
@@ -21,20 +22,21 @@ class Repo extends Component {
     if(stateName === 'repos'){
       state = 'repo';
     }else{
-      state = 'open-source';
+      state = 'org';
     }
 
     if(!this.props.data){
       let updateProp = this.props.updatePartofState(repo, stateName, state);
-      return this.setState({ repo: updateProp });
+      this.setState({ repo: updateProp });
     }else{
       if(this.props.data.name === repo){
-        return this.setState({ repo: this.props.data });
+        this.setState({ repo: this.props.data });
       }else{
         let updateProp = this.props.updatePartofState(repo, stateName, state, this.props.fetchInitialData);
-        return this.setState({ repo: updateProp });
+        this.setState({ repo: updateProp });
       }
     }
+
   }
 
   render(){
