@@ -43,8 +43,8 @@ class Home extends Component {
           <h2><a href={this.state.info.html_url} target="_blank">{this.state.info.login}</a></h2>
             <img id= "profile-avatar" src={this.state.info.avatar_url} alt="I professional picture of Elle Pope a.k.a. booellean"/>
             <dl>
-              <dt>Active Since : </dt><dd>{new Date(this.state.info.created_at).toLocaleDateString('en-US', options)}</dd>
-              <dt>Repos to Date: </dt><dd>{this.state.info.public_repos + this.state.info.total_private_repos}</dd>
+              <dt>Active Since : </dt><dd>{new Date(this.state.info.created_at).toLocaleDateString('en-US', options)}</dd><br/>
+              <dt>Repos to Date: </dt><dd>{this.state.info.public_repos + this.state.info.total_private_repos}</dd><br/>
             </dl>
             <p>{this.state.info.bio}</p>
           </header>

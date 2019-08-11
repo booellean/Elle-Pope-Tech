@@ -23,6 +23,30 @@ h2, h3, h4, h5, h6 {
   font-weight: bold;
 }
 
+p, article, textarea, input, label, small {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.3rem;
+}
+
+button, textarea, input{
+  outline: none;
+  border-style: solid;
+  transition: box-shadow .05s linear;
+}
+
+button:focus, textarea:focus, input:focus{
+  border-color: #c7fff8;
+  box-shadow: 0 0 .5rem .1rem #c7fff8;
+}
+
+dd, dt, dl {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+dt, dd {
+  display: inline;
+}
+
 .App {
   min-height: 100vh;
   display: flex;
@@ -58,16 +82,18 @@ h2, h3, h4, h5, h6 {
 
 #header>h1{
   font-family: 'Courgette', cursive;
-  text-shadow: -.1em .1em .1em rgba(133, 135, 140, .7);
+  text-shadow: -.1em .1em .1em rgba(0, 0, 0, .5);
   color: #fff;
 }
 
 #site-nav>ul{
   display: flex;
   flex-flow: row wrap;
+  justify-content: flex-end;
   font-family: 'Dosis', sans-serif;
   font-weight: bold;
-  text-shadow: .1em .1em .1em rgba(133, 135, 140, .8);
+  text-align: right;
+  text-shadow: .1em .1em .1em rgba(0, 0, 0, .6);
   font-size: 1.1rem;
 }
 
@@ -94,6 +120,13 @@ h1{
   align-items: flex-start;
 }
 
+#footer>*>h3{
+  color: #fff;
+  font-size: 1.5rem;
+  text-shadow: .1em .1em .1em rgba(0, 0, 0, .5);
+  padding: 1rem 0 2rem 0;
+}
+
 /* styles for contact form */
 #contact{
   display: flex;
@@ -104,6 +137,7 @@ h1{
   width: 30rem;
   display: flex;
   flex-flow: row wrap;
+  align-items: center;
 }
 #contact>div[role=group]>*{
   flex-shrink: 1;
@@ -113,12 +147,54 @@ h1{
   width: 100%;
 }
 
+#contact>div[role=group]>legend>h3{
+  color: #fff;
+  font-size: 1.5rem;
+  text-shadow: .1em .1em .1em rgba(0, 0, 0, .5);
+  padding: 1rem 0 2rem 0;
+}
+
 #contact>div[role=group]>label {
   width: 30%;
+  color: #fff;
+  font-size: 1.35rem;
+  text-shadow: .1em .1em .1em rgba(0, 0, 0, .5);
+}
+
+#contact>div[role=group]>label[for=message]{
+  width: 100%;
+  padding: .8rem 0;
+}
+
+textarea, input{
+  border-color: #cfcfcf #cfcfcf;
+}
+
+/* Custom stylings for inputs */
+
+input[name=name]{
+  border-radius: 1rem 1rem 0 0;
+}
+
+input[name=email]{
+  border-radius: 0 0 1rem 1rem;
+}
+
+input[type=submit]{
+  border-radius: 1rem;
+  margin: 1.6rem 0;
+  background-color: #fff;
+  border-color: #cfcfcf #8a8a8a #8a8a8a #cfcfcf;
+}
+
+input[type=submit]:active {
+  border-color: #8a8a8a #cfcfcf #cfcfcf #8a8a8a;
 }
 
 #contact>div[role=group]>input {
   width: 70%;
+  color: rgba(0, 50, 66, 0.9);
+  padding: .5rem;
 }
 
 #contact>div[role=group]>input[type=submit]{
@@ -129,6 +205,9 @@ h1{
   width: 100%;
   resize: vertical;
   min-height: 20rem;
+  color: rgba(0, 50, 66, 0.9);
+  padding: .5rem;
+  border-radius: 0 2rem 2rem 2rem;
 }
 
 #copyright{
@@ -148,9 +227,14 @@ h1{
   text-align: right;
 }
 
+#social-links>ul{
+  display: flex;
+  flex-flow: column nowrap;
+}
+
 #social-links>ul>li>a{
   color: #fff;
-  text-shadow: .1em .1em .1em rgba(133, 135, 140, .8);
+  text-shadow: .1em .1em .1em rgba(0, 0, 0, .3);
   font-size: 2rem;
 }
 
@@ -177,7 +261,7 @@ nav>ul>li{
   order: 2;
 }
 
-#tech-container>div{
+#tech-container>a>div{
   flex-grow: 0;
   flex-shrink: 0;
   padding: .75rem;
@@ -189,7 +273,7 @@ nav>ul>li{
   text-align: center
 }
 
-#tech-container>div>svg{
+#tech-container>a>div>svg{
   height: 3.5rem;
   filter: gray;
   -webkit-filter: grayscale(1);
@@ -198,7 +282,7 @@ nav>ul>li{
   transition: filter .2s ease-in-out, transform .2s ease-in-out;
 }
 
-#tech-container>div:hover>svg{
+#tech-container>a>div:hover>svg{
   height: 3.5rem;
   filter: transparent;
   -webkit-filter: grayscale(0);
@@ -206,6 +290,37 @@ nav>ul>li{
   transform: scale(1.1);
   -webkit-filter: drop-shadow( 0 0 1em #ffffde);
   filter: drop-shadow( 0 0 1em #ffffde);
+}
+
+/* Copyright information */
+
+small>a{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  color: #fff;
+  text-shadow: .1em .1em .1em rgba(0, 0, 0, .5);
+  text-decoration: none;
+  transition: transform .1s ease-in-out;
+}
+
+#poly-entertainment {
+  height: 2rem;
+  filter: drop-shadow(.1em .1em .1em rgba(0, 0, 0, .5));
+  -webkit-filter: drop-shadow(.1em .1em .1em rgba(0, 0, 0, .5));
+}
+
+#poly-entertainment>path{
+  fill: #fff;
+}
+
+small>a:hover{
+  transform: scale(1.1) translate(5%, -5%);
+  color: #c7fff8;
+}
+
+small>a:hover>#poly-entertainment>path{
+  fill: #c7fff8;
 }
 
 /* Page stylings */
@@ -218,40 +333,78 @@ nav>ul>li{
   max-height: 100%;
   width: 30%;
   color: rgba(0, 50, 66, 0.9);
-  text-shadow: -.1em .1em .1em rgba(255, 255, 255, .7);
+  text-shadow: -.1em .1em .1em rgba(255, 255, 255, 5);
   font-family: 'Dosis', sans-serif;
+  text-align: center;
+}
+
+#profile-avatar {
+  max-width: 17rem;
+  border-radius: 50rem;
 }
 
 #content{
   width: 70%;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@media screen and (max-width: 75em){
+  #social-links{
+    order: 1;
+    width: 100%;
   }
-  to {
-    transform: rotate(360deg);
+  #social-links>h3{
+    width: 100%;
+    text-align: center;
+  }
+  #social-links>ul>li>a>i{
+    padding: 0 2rem;
+  }
+  #social-links>ul{
+    width: 100%;
+    flex-flow: row wrap;
+    justify-content: center;
+  }
+
+  #tech-container{
+    order: 3;
+    width: 50%;
+  }
+
+  #contact{
+    order: 2;
+    width: 50%;
+  }
+  #contact>div[role=group]>legend>h3{
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 69.75em){
+  #footer>*>h3, #contact>div[role=group]>legend>h3{
+    padding: 2rem;
+  }
+  #tech-container{
+    width: 100%;
+    order: 3;
+  }
+  #copyright{
+    width: 100%;
+    order: 4;
+  }
+  #contact{
+    order: 2;
+    width: 100%;
+    justify-content: center;
+  }
+  #social-links{
+    order: 1;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 24.25em){
+  #contact>div[role=group]>label, #contact>div[role=group]>input {
+    width: 100%;
+    border-radius: 1em;
   }
 }

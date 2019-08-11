@@ -28,6 +28,7 @@ const renderPage = (req, data) =>{
       <head>
         <title>Elle Pope Tech</title>
         <link rel='stylesheet' href='/css/main.css'>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
         <script src="https://kit.fontawesome.com/f8e5b52ed7.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Courgette|Dosis|Roboto+Condensed|Roboto+Mono&display=swap" rel="stylesheet">
         <script src='/bundle.js' defer></script>

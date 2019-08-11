@@ -240,18 +240,18 @@ class ContribRepo extends Component {
               <p>{item.org.description}</p>
             ) : null}
             <dl>
-              <dt>Operating since</dt><dd>{new Date(item.org["created_at"]).toLocaleDateString('en-US', options)}</dd>
+              <dt>Operating since</dt><dd>{new Date(item.org["created_at"]).toLocaleDateString('en-US', options)}</dd><br/>
               {item.org.blog !== "" ? (
                 <React.Fragment>
-                  <dt>Blog</dt><dd>{item.org.blog}</dd>
+                  <dt>Blog</dt><dd>{item.org.blog}</dd><br/>
                 </React.Fragment>
               ) : null}
               {item.org["public_repos"] === 0 || item.repos.length === 0 ? (
                 <p>Looks like all the contributions are private!  Please ask the Author directly about contributions to this Organization.</p>
               ) :(
                 <React.Fragment>
-                  <dt>Public Projects</dt><dd>{item.org["public_repos"]}</dd>
-                  <dt>Author Contributions</dt><dd>{item.repos.length}</dd>
+                  <dt>Public Projects</dt><dd>{item.org["public_repos"]}</dd><br/>
+                  <dt>Author Contributions</dt><dd>{item.repos.length}</dd><br/>
                 </React.Fragment>
               )}
 

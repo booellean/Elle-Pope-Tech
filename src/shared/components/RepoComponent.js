@@ -75,9 +75,9 @@ class Repo extends Component {
         <a href={item["html_url"]} target="_blank"><h3>{item['name']}</h3></a>
         <p>{item['description']}</p>
         <dl>
-          <dt>Size:</dt> <dd>{modifiedSize}</dd>
-          <dt>Created On:</dt> <dd>{new Date(item['created_at']).toLocaleDateString('en-US', options)}</dd>
-          <dt>Last Commit Date:</dt> <dd>{new Date(item['updated_at']).toLocaleDateString('en-US', options)}</dd>
+          <dt>Size:</dt> <dd>{modifiedSize}</dd><br/>
+          <dt>Created On:</dt> <dd>{new Date(item['created_at']).toLocaleDateString('en-US', options)}</dd><br/>
+          <dt>Last Commit Date:</dt> <dd>{new Date(item['updated_at']).toLocaleDateString('en-US', options)}</dd><br/>
         </dl>
         <Language repo={item} addToState={this.addToState.bind(this)} name='total_languages' title='Languages' url={item['languages_url']}/>
         <Commit repo={item} addToState={this.addToState.bind(this)} name='total_commits' title='Commits' url={item['commits_url'].split('{')[0]}/>
@@ -113,10 +113,10 @@ class Repo extends Component {
               <p>{org.description}</p>
             ) : null}
             <dl>
-              <dt>Operating since</dt><dd>{new Date(org["created_at"]).toLocaleDateString('en-US', options)}</dd>
+              <dt>Operating since</dt><dd>{new Date(org["created_at"]).toLocaleDateString('en-US', options)}</dd><br/>
               {org.blog !== "" ? (
                 <React.Fragment>
-                  <dt>Blog</dt><dd>{org.blog}</dd>
+                  <dt>Blog</dt><dd>{org.blog}</dd><br/>
                 </React.Fragment>
               ) : null}
 
