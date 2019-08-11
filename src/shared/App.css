@@ -64,6 +64,7 @@ dt, dd {
 
 #main{
   flex-grow: 1;
+  margin-top: -1em;
   height: 100%;
   display: flex;
   flex-flow: row nowrap;
@@ -75,7 +76,10 @@ dt, dd {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
+  border-radius: 0 0 1em 1em;
   background: #0dc5c1;
+  z-index: 1000;
+  overflow: visible;
   /* background: #04bfb6; */
   /* background: #00B2CA; */
 }
@@ -86,21 +90,237 @@ dt, dd {
   color: #fff;
 }
 
-#site-nav>ul{
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-end;
+/*hamburger menu stylings*/
+#hamburger {
+  display: none;
+  position: absolute;
+  height: 2.8em;
+  width: 2em;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+  -webkit-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: ease-in-out 0.2s;
+  -o-transition: ease-in-out 0.2s;
+  -moz-transition: ease-in-out 0.2s;
+  transition: ease-in-out 0.2s;
+  z-index: 5001;
+  overflow: visible;
+}
+
+#hamburger > div {
+  display: block;
+  position: absolute;
+  background-color: #ffffff;
+  box-shadow: 0.1em 0.1em 0 #d5d8e2;
+  border-radius: 100em;
+  height: 0.3em;
+  width: 100%;
+}
+
+#hamburger.clickEvent > div {
+  background-color: #ffffff;
+  box-shadow: none;
+}
+
+#hamburger > div:nth-child(1) {
+  -webkit-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: top ease-in-out 0.1s 0.1s;
+  -webkit-transition: transform linear 0.1s;
+  -o-transition: top ease-in-out 0.1s 0.1s;
+  -o-transition: transform linear 0.1s;
+  -moz-transition: top ease-in-out 0.1s 0.1s;
+  -moz-transition: transform linear 0.1s;
+  transition: top ease-in-out 0.1s 0.1s;
+  transition: transform linear 0.1s;
+  top: 0.35em;
+}
+
+#hamburger > div:nth-child(2) {
+  -webkit-transition: all linear 0.01s 0.09s;
+  -o-transition: all linear 0.01s 0.09s;
+  -moz-transition: all linear 0.01s 0.09s;
+  transition: all linear 0.01s 0.09s;
+  top: 1.2em;
+  left: 0;
+  width: 100%;
+}
+
+#hamburger > div:nth-child(3) {
+  -webkit-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: top ease-in-out 0.1s 0.1s;
+  -webkit-transition: transform linear 0.1s;
+  -o-transition: top ease-in-out 0.1s 0.1s;
+  -o-transition: transform linear 0.1s;
+  -moz-transition: top ease-in-out 0.1s 0.1s;
+  -moz-transition: transform linear 0.1s;
+  transition: top ease-in-out 0.1s 0.1s;
+  transition: transform linear 0.1s;
+  top: 2em;
+}
+
+#hamburger.clickEvent > div:nth-child(1) {
+  -webkit-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  transform: rotate(45deg);
+  -webkit-transition: all ease-in-out 0.1s;
+  -webkit-transition: transform linear 0.1s 0.1s;
+  -o-transition: all ease-in-out 0.1s;
+  -o-transition: transform linear 0.1s 0.1s;
+  -moz-transition: all ease-in-out 0.1s;
+  -moz-transition: transform linear 0.1s 0.1s;
+  transition: all ease-in-out 0.1s;
+  transition: transform linear 0.1s 0.1s;
+  top: 1.2em;
+}
+
+#hamburger.clickEvent > div:nth-child(2) {
+  -webkit-transition: width linear 0.01s 0.09s;
+  -o-transition: width linear 0.01s 0.09s;
+  -moz-transition: width linear 0.01s 0.09s;
+  transition: width linear 0.01s 0.09s;
+  -webkit-transition: left linear 0.01s 0.09s;
+  -o-transition: left linear 0.01s 0.09s;
+  -moz-transition: left linear 0.01s 0.09s;
+  transition: left linear 0.01s 0.09s;
+  width: 1%;
+  left: 50%;
+}
+
+#hamburger.clickEvent > div:nth-child(3) {
+  -webkit-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  -webkit-transition: all ease-in-out 0.1s;
+  -webkit-transition: transform linear 0.1s 0.1s;
+  -o-transition: all ease-in-out 0.1s;
+  -o-transition: transform linear 0.1s 0.1s;
+  -moz-transition: all ease-in-out 0.1s;
+  -moz-transition: transform linear 0.1s 0.1s;
+  transition: all ease-in-out 0.1s;
+  transition: transform linear 0.1s 0.1s;
+  top: 1.2em;
+}
+
+@media all and (max-width: 45em) {
+  #header nav#site-nav {
+    position: absolute;
+    top: 0em;
+    right: 0em;
+    height: 20em;
+    width: 20em;
+    border-radius: 50%;
+    background: #00B2CA;
+    transform: scale(1, 1) translate(20em, -20em);
+    box-shadow: -.1em .1em .7em .2em rgba(0, 0, 0, .3);
+  }
+  #header nav#site-nav ul.small-screen {
+    display: block;
+  }
+  #header nav#site-nav ul.small-screen li {
+    list-style: none;
+    padding: 0em;
+    text-align: left;
+    transition: transform .1s linear;
+  }
+  #header nav#site-nav ul.small-screen li a {
+    font-size: 1.5rem;
+  }
+  #header nav#site-nav ul.small-screen li:first-child {
+    transform: translate(3.5em, 4.5em);
+  }
+  #header nav#site-nav ul.small-screen li:first-child:hover {
+    transform: translate(3.5em, 4.5em) scale(1.2, 1.2);
+  }
+  #header nav#site-nav ul.small-screen li:nth-child(2) {
+    transform: translate(0.7em, 7.46em);
+  }
+  #header nav#site-nav ul.small-screen li:nth-child(2):hover {
+    transform: translate(0.7em, 7.46em) scale(1.2, 1.2);
+  }
+  #header nav#site-nav ul.small-screen li:nth-child(3) {
+    transform: translate(3.5em, 10em);
+  }
+  #header nav#site-nav ul.small-screen li:nth-child(3):hover {
+    transform: translate(3.5em, 10em) scale(1.2, 1.2);
+  }
+  #header nav#site-nav ul.small-screen li:nth-child(4) {
+    transform: translate(4.6em, 8.4em);
+  }
+  #header nav#site-nav ul.small-screen li:nth-child(4):hover {
+    transform: translate(4.6em, 8.4em) scale(1.2, 1.2);
+  }
+  /* #header nav#site-nav ul.small-screen li:first-child {
+    transform: translate(3.5em, 4em);
+  }
+  #header nav#site-nav ul.small-screen li:first-child:hover {
+    transform: translate(3.5em, 4em) scale(1.2, 1.2);
+  }
+  #header nav#site-nav ul.small-screen li:nth-child(2) {
+    transform: translate(2.3em, 5.46em);
+  }
+  #header nav#site-nav ul.small-screen li:nth-child(2):hover {
+    transform: translate(2.3em, 5.46em) scale(1.2, 1.2);
+  }
+  #header nav#site-nav ul.small-screen li:nth-child(3) {
+    transform: translate(2.2em, 6.93em);
+  }
+  #header nav#site-nav ul.small-screen li:nth-child(3):hover {
+    transform: translate(2.2em, 6.93em) scale(1.2, 1.2);
+  }
+  #header nav#site-nav ul.small-screen li:nth-child(4) {
+    transform: translate(4.6em, 8.4em);
+  }
+  #header nav#site-nav ul.small-screen li:nth-child(4):hover {
+    transform: translate(4.6em, 8.4em) scale(1.2, 1.2);
+  } */
+  #header nav#site-nav.open {
+    transform: scale(1, 1) translate(3em, -3em);
+    transition: transform 0.1s linear;
+  }
+
+  #hamburger {
+    display: block;
+  }
+}
+
+#site-nav>ul>li{
   font-family: 'Dosis', sans-serif;
   font-weight: bold;
   text-align: right;
-  text-shadow: .1em .1em .1em rgba(0, 0, 0, .6);
-  font-size: 1.1rem;
 }
 
 #site-nav>ul>li>a{
   text-decoration: none;
-  color: #fff;
   padding: 0  0 0 3rem;
+  text-shadow: .1em .1em .1em rgba(0, 0, 0, .6);
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+#site-nav>ul.wide-screen{
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
+}
+
+#site-nav>ul.wide-screen>li{
+  transition: transform .1s ease-in-out;
+}
+
+#site-nav>ul.wide-screen>li:hover{
+  transform: scale(1.2) translate(-15%, -10%);
 }
 
 h1{
@@ -407,4 +627,8 @@ small>a:hover>#poly-entertainment>path{
     width: 100%;
     border-radius: 1em;
   }
+}
+
+@media screen and (max-width: ‭38.75em){
+
 }
