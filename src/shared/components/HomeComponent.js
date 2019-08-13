@@ -14,14 +14,35 @@ class Home extends Component {
   componentDidMount(){
     if(this.props.data !== null){
       this.setState({ info: this.props.data[0] });
+      this.headerContent(this.props.data[0]);
     }else{
       return this.props.fetchInitialData()
-          .then( data =>{
-            let newDat = JSON.parse(data);
-            this.setState({ info: newDat[this.props.name][0] });
-            this.props.updateInitialState(newDat);
-          });
+        .then( data =>{
+          let newDat = JSON.parse(data);
+          this.setState({ info: newDat[this.props.name][0] });
+          this.props.updateInitialState(newDat);
+          this.headerContent(newDat);
+        });
     }
+    
+  }
+
+  headerContent = (data) =>{
+    let options = { month: "long", day: "numeric", year: "numeric" };
+
+    let fragment = (
+      <React.Fragment>
+        <h2><a href={data.html_url} target="_blank">{data.login}</a></h2>
+        <img id= "profile-avatar" src={data.avatar_url} alt="I professional picture of Elle Pope a.k.a. booellean"/>
+        <dl>
+          <dt>Active Since : </dt><dd>{new Date(data.created_at).toLocaleDateString('en-US', options)}</dd><br/>
+          <dt>Repos to Date : </dt><dd>{data.public_repos + data.total_private_repos}</dd><br/>
+        </dl>
+        <p>{data.bio}</p>
+      </React.Fragment>
+    );
+
+    this.props.updatePageHeaderContent(fragment);
   }
 
   render(){
@@ -29,30 +50,11 @@ class Home extends Component {
    if(!this.state.info){
      return(
       <React.Fragment>
-        <header id='page-header'>
-        </header>
         <img src={temp} alt="loading cat is loading the page now!"></img>
       </React.Fragment>
      );
    }else{
-    let options = { month: "long", day: "numeric", year: "numeric", };
-
-      return(
-        <React.Fragment>
-          <header id='page-header'>
-          <h2><a href={this.state.info.html_url} target="_blank">{this.state.info.login}</a></h2>
-            <img id= "profile-avatar" src={this.state.info.avatar_url} alt="I professional picture of Elle Pope a.k.a. booellean"/>
-            <dl>
-              <dt>Active Since : </dt><dd>{new Date(this.state.info.created_at).toLocaleDateString('en-US', options)}</dd><br/>
-              <dt>Repos to Date: </dt><dd>{this.state.info.public_repos + this.state.info.total_private_repos}</dd><br/>
-            </dl>
-            <p>{this.state.info.bio}</p>
-          </header>
-          <article id="content">
-            {this.state.bio}
-          </article>
-        </React.Fragment>
-      );
+      return this.state.bio
     }
   }
 }

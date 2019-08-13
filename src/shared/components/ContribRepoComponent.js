@@ -30,8 +30,10 @@ class ContribRepo extends Component {
       this.setState({ copy: this.props.data['repos'] });
       if(!this.props.data['languages-in-repos']){
         return this.setRepoValues(this.props.data['repos']);
+      }else{
+        this.headerContent(this.props.data['languages-in-repos']);
+        return this.setState({ languages: this.props.data['languages-in-repos'] || {} });
       }
-      return this.setState({ languages: this.props.data['languages-in-repos'] || {} });
     }else{
       let stateCopy;
       return this.props.updateInitialState(this.props.fetchInitialData)
@@ -61,6 +63,7 @@ class ContribRepo extends Component {
           stateCopy[i].repos[j] = repo;
           if( j === stateCopy[i].repos.length -1 ){
             this.setState({ languages : data.languages });
+            this.headerContent(data.languages);
           }
         });
       }))
@@ -217,6 +220,29 @@ class ContribRepo extends Component {
     return <i className="fas fa-sort-down"></i>;
   }
 
+  headerContent = (data) =>{
+    let fragment = (
+      <React.Fragment>
+        <h2 onClick={(e) => this.sortLanguage(e, 'reset')} >Languages</h2>
+        <p onClick={(e) => this.sortByDate(e, 'created_at', 'create')}>
+          Created On {this.createSortIcon('create')}
+        </p>
+        <p onClick={(e) => this.sortByDate(e, 'updated_at', 'commit')}>
+          Commit Date {this.createSortIcon('commit')}
+          </p>
+        <br/>
+        <p onClick={(e) => this.sortByName(e, 'org', 'orgAlpha')} >
+          Sort by Org Name {this.createSortIcon('orgAlpha')} </p>
+        <p onClick={(e) => this.sortByName(e, 'repo', 'repoAlpha')}>
+          Sort by Repo Name {this.createSortIcon('repoAlpha')}</p>
+        <ul>
+          {this.createLanguagesList(data)}
+        </ul>
+      </React.Fragment>
+    );
+    this.props.updatePageHeaderContent(fragment);
+  }
+
   render(){
 
    if(!this.state.copy){
@@ -268,30 +294,9 @@ class ContribRepo extends Component {
       });
 
       return(
-        <React.Fragment>
-          <header id='page-header'>
-          <h2 onClick={(e) => this.sortLanguage(e, 'reset')} >Languages</h2>
-          <p onClick={(e) => this.sortByDate(e, 'created_at', 'create')}>
-            Created On {this.createSortIcon('create')}
-          </p>
-          <p onClick={(e) => this.sortByDate(e, 'updated_at', 'commit')}>
-            Commit Date {this.createSortIcon('commit')}
-            </p>
-          <br/>
-          <p onClick={(e) => this.sortByName(e, 'org', 'orgAlpha')} >
-            Sort by Org Name {this.createSortIcon('orgAlpha')} </p>
-          <p onClick={(e) => this.sortByName(e, 'repo', 'repoAlpha')}>
-            Sort by Repo Name {this.createSortIcon('repoAlpha')}</p>
-          <ul>
-            {this.createLanguagesList(this.state.languages)}
-          </ul>
-          </header>
-          <article id="content">
-            <ul>
-              {listItems}
-            </ul>
-          </article>
-        </React.Fragment>
+        <ul>
+          {listItems}
+        </ul>
       );
     }
   }

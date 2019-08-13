@@ -7,24 +7,13 @@ export default class Header extends Component {
     super(props);
     this.state = {
       open: false,
-      displayWidth: null,
       isMobile: false
     }
-    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
   }
 
-  componentDidMount() {
-    this.updateWindowDimensions();
-    window.addEventListener('resize', this.updateWindowDimensions);
-  }
-  
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateWindowDimensions);
-  }
-  
-  updateWindowDimensions() {
-    this.setState({ displayWidth: window.innerWidth });
-    if(this.state.displayWidth <= 720){
+
+  componentWillReceiveProps() {
+    if(this.props.screenSize <= 720 || null){
       this.setState({ isMobile : true});
     }else{
       this.setState({ open : false, isMobile : false});
@@ -49,7 +38,7 @@ export default class Header extends Component {
             <div></div>
           </div>
           <nav id="site-nav" className={this.state.open ? 'open' : null}>
-            <ul className={this.state.isMobile ? 'small-screen' : 'wide-screen'}>
+            <ul className={this.props.screenSize >= 720 ? 'wide-screen' : 'small-screen'}>
               <li>
                 <NavLink className='nav-link' to='/' onClick={()=> {this.handleClick()}}> About</NavLink>
               </li>

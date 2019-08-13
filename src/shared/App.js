@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import background from './background.png';
 import '../../node_modules/react-vis/dist/style.css';
 import Header from './components/HeaderComponent';
 import Footer from './components/FooterComponent';
@@ -31,7 +32,9 @@ export default class App extends Component {
       'repos': null,
       'open-source': null,
       'repo': null,
-      'org': null
+      'org': null,
+      'screenSize' : null,
+      'headerData' : null
     }
 
     keysArr.forEach( loc =>{
@@ -41,6 +44,18 @@ export default class App extends Component {
         console.error("Error: No state found");
       }
     });
+
+    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+  }
+
+  // For screen sizing
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  }
+  
+  updateWindowDimensions() {
+    this.setState({ screenSize: window.innerWidth });
   }
 
   //update state from children that are rendered for the first time. Avoids unnecessary loading
@@ -109,10 +124,6 @@ export default class App extends Component {
             })
           }else{
             let index = arr.indexOf(repo);
-            console.log(arr);
-            console.log(repo);
-            console.log(this.state[stateName].repos);
-            console.log(arr.indexOf(repo));
 
             if(name === 'total_languages'){
               let keys = Object.keys(data[0]);
@@ -137,12 +148,22 @@ export default class App extends Component {
     //if new object state is part of an array....
   }
 
+  //update the page header when children componenets mount
+  updatePageHeaderContent(data){
+    this.setState({ headerData: data });
+  }
+
   render(){
 
     return (
       <div className='App'>
-        <Header />
+        <Header screenSize={this.state.screenSize}/>
         <main id='main'>
+        {/* TODO: Add animation intro here */}
+        <header id='page-header' className={this.state.screenSize > 1080 ? 'wide-screen' : 'small-screen'}>
+          {this.state.headerData}
+        </header>
+        <article id="content">
         <Switch>
           {routes.map( ({ path, exact, component: C, ...rest, name} ) => (
             <Route
@@ -150,19 +171,20 @@ export default class App extends Component {
               path={path}
               exact={exact}
               render={ () => (
-                // <C data={this.state[name] || this.props.github} {...rest} stateName={name}/>
                 <C data={this.state[name]}
                   {...rest}
                   stateName={name}
                   updateInitialState={this.updateInitialState.bind(this)}
                   updatePartofStateArray={this.updatePartofStateArray.bind(this)}
                   updatePartofState={this.updatePartofState.bind(this)}
+                  updatePageHeaderContent={this.updatePageHeaderContent.bind(this)}
                   />
                 )}
               />
             ))}
             <Redirect to='/404' component={NotFound} />
           </Switch>
+          </article>
           </main>
         <Footer />
       </div>

@@ -15,10 +15,6 @@ import {
 
 import renderFetch from '../../api/render';
 
-import Language from './SnippetLanguageComponent';
-import Contributor from './SnippetContribComponent';
-import Commit from './SnippetCommitComponent';
-
 class PersonalRepo extends Component {
   constructor(props){
     super(props);
@@ -29,7 +25,7 @@ class PersonalRepo extends Component {
       ascending : {
         create : true,
         commit : true,
-        alpha : true,
+        alpha : true
       },
       currentLang : 'reset',
       useCanvas: false,
@@ -39,9 +35,14 @@ class PersonalRepo extends Component {
       xMinTime: Math.floor((new Date().setFullYear(new Date().getFullYear() - 3) /1000)),
       xMaxTime: Math.floor(new Date() / 1000)
     }
+
+
   }
 
   componentDidMount(){
+    let commitCopy = {};
+    let languageCopy = {};
+
     if(this.props.data !== null){
       this.sortInitialRepos(this.props.data['repos']);
       
@@ -50,7 +51,35 @@ class PersonalRepo extends Component {
       if(!this.props.data['languages-in-repos']){
         return this.setRepoValues(this.props.data['repos']);
       }
-      return this.setState({ languages: this.props.data['languages-in-repos'] || {} });
+        this.headerContent(this.props.data['languages-in-repos']);
+        this.props.data['repos'].forEach( repo =>{
+          repo['total_commits'].forEach( commit =>{
+            if(commit.commit){
+              let dat = new Date(commit.commit.author.date)
+              let month = dat.toLocaleDateString('en-US', { month : '2-digit' })
+              let year = dat.toLocaleDateString('en-US', { year : 'numeric' })
+              let date = `${year}/${month}`;
+              commitCopy[date] = (commitCopy[date] + 1) || 1;
+            }
+          })
+          repo['total_languages'].forEach( repo =>{
+            console.log(repo);
+            let keys = Object.keys(repo)
+            keys.forEach(key =>{
+              languageCopy[key] = (languageCopy[key] + 1) || 1;
+            })
+          })
+        })
+
+        let arr = [];
+        let k = Object.keys(languageCopy);
+        k.forEach( key =>{
+          arr.push({x: key, y: languageCopy[key]});
+        })
+
+        this.setState({ languageData : arr })
+        this.setState({ commitData: commitCopy });
+        return this.setState({ languages: this.props.data['languages-in-repos'] || {} });
     }else{
 
       return this.props.updateInitialState(this.props.fetchInitialData)
@@ -80,7 +109,7 @@ class PersonalRepo extends Component {
           let keys = Object.keys(data.data[0]);
 
           keys.forEach(key =>{
-            languageCopy[key] = (data.data[0][key] + languageCopy[key]) || data.data[0][key];
+            languageCopy[key] = (languageCopy[key] + 1) || 1;
           })
 
           if(stateCopy.indexOf(repo) === (stateCopy.length - 1)){
@@ -91,6 +120,7 @@ class PersonalRepo extends Component {
             })
             this.setState({ languages : data.languages });
             this.setState({ languageData : arr })
+            this.headerContent(data.languages);
           }
         });
     })
@@ -104,10 +134,12 @@ class PersonalRepo extends Component {
           repo['total_commits'] = data.data;
 
           data.data.forEach( commit =>{
-            let month = new Date(commit.commit.author.date).toLocaleDateString('en-US', { month : '2-digit' })
-            let year = new Date(commit.commit.author.date).toLocaleDateString('en-US', { year : 'numeric' })
-            let date = `${year}/${month}`;
-            commitCopy[date] = (commitCopy[date] + 1) || 1;
+            if(commit.commit){
+              let month = new Date(commit.commit.author.date).toLocaleDateString('en-US', { month : '2-digit' })
+              let year = new Date(commit.commit.author.date).toLocaleDateString('en-US', { year : 'numeric' })
+              let date = `${year}/${month}`;
+              commitCopy[date] = (commitCopy[date] + 1) || 1;
+            }
           })
 
           stateCopy[stateCopy.indexOf(repo)] = repo;
@@ -220,6 +252,22 @@ class PersonalRepo extends Component {
     this.setState({value});
   };
 
+  headerContent = (data) =>{
+    let fragment = (
+      <React.Fragment>
+        <h2 onClick={(e) => this.sortLanguage(e, 'reset')} >Languages</h2>
+        <p onClick={(e) => this.sortByDate(e, 'created_at', 'create')}>Created Date</p>
+        <p onClick={(e) => this.sortByDate(e, 'updated_at', 'commit')}>Commit Date</p>
+        <br/>
+        <p onClick={(e) => this.sortByName(e, 'alpha')}>Sort by Repo Name</p>
+        <ul>
+          {this.createLanguagesList(data)}
+        </ul>
+      </React.Fragment>
+    );
+    this.props.updatePageHeaderContent(fragment);
+  }
+
   render(){
 
    if(!this.state.copy){
@@ -248,15 +296,6 @@ class PersonalRepo extends Component {
 
       return(
         <React.Fragment>
-          <header id='page-header'>
-            <h2 onClick={(e) => this.sortLanguage(e, 'reset')} >Languages</h2>
-            <p onClick={(e) => this.sortByDate(e, 'created_at', 'create')}>Created Date</p>
-            <p onClick={(e) => this.sortByDate(e, 'updated_at', 'commit')}>Commit Date</p>
-            <br/>
-            <p onClick={(e) => this.sortByName(e, 'alpha')}>Sort by Repo Name</p>
-            {this.createLanguagesList(this.state.languages)}
-          </header>
-          <article id="content">
             <section id="graph-container">
               <h3>Total Activity</h3>
               <FlexibleXYPlot
@@ -288,7 +327,7 @@ class PersonalRepo extends Component {
                 ) : null}
               </FlexibleXYPlot>
               
-              <h3>Total Languages by Line</h3>
+              <h3>Total Languages</h3>
               <FlexibleXYPlot 
                 xType="ordinal"
                 xDistance={100}
@@ -297,13 +336,6 @@ class PersonalRepo extends Component {
                 <HorizontalGridLines />
                 <XAxis />
                 <YAxis tickFormat={ k =>{
-                  if(k>0){
-                    if(k>999999){
-                      return `${Math.floor(k/100000)/10}M`
-                    }else{
-                      return `${Math.floor(k/1000)}k`
-                    }
-                  }
                   return k
                 }}/>          
                 <BarSeries className="language-data" data={this.state.languageData} />
@@ -314,7 +346,6 @@ class PersonalRepo extends Component {
               <h3>Personal Repos</h3>
             </section>
             {listItems}
-          </article>
         </React.Fragment>
       );
     }
